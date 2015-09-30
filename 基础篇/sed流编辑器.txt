@@ -1,0 +1,76 @@
+-----------------------sed--------------------------
+sed的基本用法:
+
+sed:流编辑器(stream editor)
+    属于行编辑器
+    注意：（编辑器分为行编辑器和全屏编辑器，vi就是全屏编辑器）
+   
+sed:模式空间
+默认不编辑原文件，仅对模式空间中的数据做处理，而后，处理结束后，将模式空间的内容打印至屏幕
+
+sed [option] 'AddressCommand' file ...
+      -n:静默模式，不再默认显示模式空间中的内容
+      -i:直接修改原文件
+      -e SCRIPT -e SCRIPT ...:可以执行多个脚本（这个地方把 AddressCommand 称做脚本）
+      -f /PATH/TO/SED_SCRIPT:
+         用法是 /PATH/TO/SED_SCRIPT 里面保存着一个个的脚本，然后一个个的执行作用于 file文件
+            sed -f /PATH/TO/SED_SCRIPT file
+      -r:表示使用扩展正则表达式
+Address:
+1、startLine,EndLine ：表示起始行到结束行
+   例如：1,100 表示第1行到100行
+   $:表示最后一行
+
+2、/RegExp/ 表示正则匹配的配内容
+   例如：/^root/ 表示以root开头的内容
+3、/pattern1/,/pattern2/ 表示第一次被pattern1匹配到的行开始到第一次被pattern2匹配到的行结束
+4、LineNumber：指定的行
+5、startLine,+N  ：表示从startLine开始，向后的N行
+
+
+Command：
+   d:删除匹配到的行   例如： set '1,2d' /etc/inittab ，删除读取/etc/inittab之后的内容的第1行与第二行之后显示出来
+   p:显示复合条件的行
+   a \string: 在指定的行后面追加新行，内容为'string'  例如：sed '/^\//a \# hello world' /etc/inittab 找到以/开头的行，并且追加#hello world
+   i \string: 在指定的行前面面追加新行，内容为'string'
+   r FILE: 将指定文件的内容添加至符合条件的行处 例如：sed '2r /etc/issue' /etc/inittab
+   w FILE: 将地址指定范围i内的内容另存至指定的文件中；
+   s/pattern/string/: 查找并替换，默认只替换每行中第一次被模式匹配到的字符串
+      加修饰符：
+      g:全局替换  例如 sed 's/\//#/g' /etc/fstab ：不加Address默认是全局
+      i:忽略字符大小写
+      
+      注意：查找的分隔符只要三个相同就可以，例如可以：s#pattern#string#  或者 s@pattern@string@ 等价：s/pattern/string/
+   
+   &:引用模式匹配的整个串 例如:sed 's/l..k/&r/g' sed.txt 将sed.txt中的内容以l开头中间两个任意两个字符以k结尾的字符串替换成其后面加一个r字符
+      也可以使用后向引用：sed 's/\(l..k\)/\1r/g' sed.txt 
+
+练习题：
+1、删除/etc/grub.conf文件中行首的空白符
+sed -r 's@^[[:space:]]+@@g' /etc/grub.conf
+2、替换/etc/inittab文件中id:3:initdefault中的数字为5
+sed 's@\(id:\)[0-9]\(:initdefault\)@\15\2@g' /etc/inittab
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
