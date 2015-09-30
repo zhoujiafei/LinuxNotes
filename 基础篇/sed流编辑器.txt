@@ -50,26 +50,31 @@ Command：
 sed -r 's@^[[:space:]]+@@g' /etc/grub.conf
 2、替换/etc/inittab文件中id:3:initdefault中的数字为5
 sed 's@\(id:\)[0-9]\(:initdefault\)@\15\2@g' /etc/inittab
+3、删除/etc/inittab文件中的空白行
+sed '/^%/d' /etc/inittab
+4、删除/etc/inittab文件中开头的#
+sed 's/^#//' /etc/inittab
+5、删除/etc/inittab文件中开头的#号及后面的空白字符，但要求#后面必须有空白字符
+sed -r 's@^#[[:space:]]+@@g' /etc/inittab
+6、删除某文件中以空白字符后面跟#类的行中的开头的空白字符及#
+sed -r 's@^[[:space:]]+#@@g' /etc/inittab
+7、取出一个文件路径中的目录名称
+echo '/etc/rc.d/' | sed -r 's@^(/.*/)[^/]+/?@\1@g'
+8、传递一个用户名参数给脚本，判断此用户的用户名跟其基本组的组名是否一致，并且将结果显示出来
 
 
+9、传递三个参数给脚本，第一个为整数，第二个为算数运算符，第三个为整数，将计算结果显示出来，要求保留两位精度，形如：./calc.sh 5 / 2
 
 
+10、传递三个参数给脚本，参数均为用户名，将这些用户的账号信息提取出来后放置于/tmp/testusers.txt文件中，并且要求每一行行首有行号。
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+11、写一个脚本：
+   判断当前主机的CPU生产商，其信息在/proc/cpuinfo中vendor id一行中
+   如果生产商为AuthenticAMD,就显示其为AMD公司
+   如果生产商为GenuineIntel,就显示其为Intel公司
+   否则，就说其为非主流公司
+   
+12、写一个脚本，给脚本传递三个整数，判断其中的最大数和最小数，并显示出来
 
 
 
