@@ -1,0 +1,328 @@
+用户、组、权限
+
+安全上下文（secure cntext）
+
+权限：
+
+文件
+r：可读，可以使用cat等命令查看内容
+w：可写，可以编辑或删除此文件
+x：可执行，可以在命令提示符下当做命令提交给内核运行
+
+目录
+r：可以对此目录使用ls列出此目录的文件
+w：可以在此目录创建文件
+x：可以使用cd切换进此目录，也可以使用ls -l查看内部文件的详细信息
+
+rwx：
+0   000 —：无权限
+1   001 —x：执行权限
+2   010 -w-：写
+3   011 -wx：写和执行
+4   100 r—：只读
+5   101 r-x：读和执行
+6   110 rw-：读写
+7   111 rwx：可读可写可执行
+
+
+用户：UID   /etc/passwd
+组：GID     /etc/group
+
+影子口令：
+用户：/etc/shadow
+组：/etc/gshadow
+
+
+用户类别：
+管理员：uid：0
+普通用户：uid：（1 ~ 65535）
+         系统用户：1~499
+         一般用户：500 ~6000
+
+用户组类别第一种分法：
+管理员组：
+普通组：
+	系统组：
+        一般组：
+
+用户组类别第二种分法：
+	私有组：创建用户时，如果没有为其指定所属的组，系统会自动为其创建一个与用户名同名的组
+	基本组：用户的默认组
+	附加组：额外组，默认组以外的其他组
+
+ -----------------------------------------------------------
+进程：tom  tom
+对象：rwxrw-r-x   root   root  /bin/ls
+
+tom : ls
+rwxr-xr-x  root  root   /bin/ls
+ -----------------------------------------------------------
+
+/etc/passwd:
+account：登录名
+password：密码（通常是：占位符x）
+UID:用户ID
+GID:基本组ID
+comment：注释
+HOME DIR：家目录
+SHELL:用户默认shell
+
+
+/etc/shadow:
+account:登录名
+encrypted password :加密的密码
+最近一次修改密码的时间
+最短使用期限
+最长使用期限
+警告时间
+非活动时间
+过期时间
+
+/etc/group:
+组名
+密码
+GID
+以此组为其附加组的用户列表
+
+加密方法：
+	对称加密：加密和解密使用同一个密码
+	公钥加密：每个密码都成对出现，一个为私钥（secret key），一个为公钥（public key）
+	单向加密：散列加密，提取数据特征码，常用于数据完整性校验
+		1、雪崩效应
+		2、定长输出
+			MD5：Message Digest ，128位定长输出
+			SHA1:Secure Hash Algorithm，160位定长输出
+
+
+
+用户管理命令：
+useradd USERNAME  ：添加用户
+groupadd GROUPNAME :添加组
+
+用户管理：
+	useradd、userdel、usermod、password、chsh、chfn、finger、id、chage
+
+组管理：
+	groupadd、groupdel、group mod、password
+
+权限管理：
+	chown、chgrp、chmod、umask
+
+
+useradd [options] USERNAME
+		-u UID
+		-g GID  （基本组  必须实现存在）
+		-G GID,… (附加组，可以有多个，彼此之间用逗号隔开)
+		-c “COMMENT” 注释信息
+                -d /path/to/somedirectory    指定家目录
+                -s 指定用户使用的shell  例如：/bin/bash
+		-m -k  ：SKEL_DIR(/etc/skel)  自动将/etc/skel 下面的用于用户自己的环境配置文件复制到用户的家目录
+		-M：不给用户创建家目录
+		-r：添加一个系统用户  （系统用户不会有家目录）
+
+环境变量：
+	PATH:
+	HISTSIZE:
+	SHELL:用于保存当前用户所使用的shell
+
+/etc/shells ：这个文件指定了当前系统可用的安全shell
+
+/etc/login.defs：
+
+
+userdel [options]  USERNAME    （如果在删除用户的时候，没有指定任何参数，用户的家目录是不会被删除的）
+	-r：删除用户的同时删除用户家目录
+
+id：用来查看用户的账号属性（不加参数默认查看当前用户）
+	-u
+	-g
+	-G
+	-n：表示显示名称而非ID号
+
+finger USERNAME  :查看用户相关信息
+
+修改用户账号属性信息
+usermod
+	-u：修改UID
+	-g：修改基本组（一定是已经存在的组）
+	-G：GID  (如果此前有附加组会被覆盖)  如果不想被覆盖：通常用-a  配合使用为用户添加额外的附加组
+	-c：注释
+	-d：为用户指定新的家目录（一般和-m 配合使用，在指定了新的家目录的同时将原先的家目录里面的内容复制的到新的家目录，否则的话原来的家目录将无法访问）
+	-s：修改shell
+	-l：修改用户的登陆名
+	-L：锁定账号
+	-U: 解锁账号
+
+chsh：专门用来修改用户shell
+chfn：修改注释信息  （finger 命令执行的结果）
+
+密码管理：
+passwd 【USERNAME】
+	— —stdin：从标准输入传入密码
+	-l：锁定用户账号
+	-u：解锁用户账号
+	-d：删除用户密码
+
+pwck：检查用户账号的完整性
+
+组管理：
+
+创建组：groupadd:
+groupadd
+	-g：指定GID (不指定是上一个GID+1)
+	-r：添加系统组
+
+groupmod
+	-g：修改GID
+	-n：修改组名
+
+groupdel  [GROUPNAME]:删除组名
+	
+gpasswd：为组设定密码
+
+newgrp GRPNAME :登陆到一个基本组，需要输入密码（上面的命令设定的密码）<—>   exit 退出
+
+chage：修改账号和密码的有效期限
+	-d：最近一次的修改时间
+	-E：过期时间
+	-I(大写i):  非活动时间
+	-m：最短使用期限
+	-M：最长使用期限
+	-W：警告时间
+
+
+权限管理
+r：
+w：
+x：
+
+三类用户
+u：属主
+g：属组
+o：其他用户
+
+chown：改变文件属主（只有管理员可以使用此命令）例如：chown  zhoujiafei   file1   就是将file1文件的属主改变成zhoujiafei
+# chown USERNAME  file,…
+	-R：修改目录及其内部文件的属主
+	— — reference=/path/to/somefile   file,…  :意思是将某些文件的属主修改成参看的文件的属主   例如：chown — — reference=/tmp/sql  /tmp/1.txt  （实际是属主属组一块改）
+
+chown USERNAME:GRPNAME  file,…   可以用这个同时改属主与属组
+chown USERNAME.GRPNAME  file,…
+
+
+chgrp：改变文件属组(只有管理员可以使用此命令）
+# chgrp GRPNAME file,…
+	-R：修改目录及其内部文件的属组
+	— — reference=/path/to/somefile   file,…  :意思是将某些文件的属主修改成参看的文件的属组  例如：chgrp — — reference=/tmp/sql  /tmp/1.txt
+
+chmod：修改文件权限
+修改三类用户的权限：
+chmod  MODE  file,…
+	-R：修改目录及其内部文件的权限
+	— — reference=/path/to/somefile   file,…  :意思是将某些文件的属主修改成参看的文件的权限  例如：chmod — — reference=/tmp/sql  /tmp/1.txt
+
+修改某类用户或某些用户权限：
+u,g,o,a
+chmod 用户类别=MODE  file,…
+
+例如：chmod  u=rw,g=r,o=  file1   将file1文件的属主改成可读可写，将属组权限改成可读权限，奇特用户啥权限都没有
+
+修改某类用户的某位或某些位权限：
+u,g,o,a
+chmod 用户类别（+|-）MODE  file,…     例如：chmod u+x file1  将file1文件的属主增加执行权限
+								                                       chmod  a+x  file1  将file1文件的所有用户增加执行权限，其中针对所有用户 a可以省略，chmod  +x  file1
+					
+
+练习题：
+1、新建一个没有家目录的用户openstack
+#  useradd -M openstack
+2、复制/etc/skel为/home/openstack;
+#   cp -r  /etc/skel  /home/openstack
+3、改变/home/openstack及其内部文件的属主与属组均为openstack;
+#   chown -R openstack: openstack /home/openstack
+4、/home/openstack及其内部文件，属组和其他用户没有任何访问权限；
+#   chmod -R go=  /home/openstack
+
+
+小提示：openssl passwd -1 -salt '123456' 这样可以生成带salt的md5加密的密码    在手动创建用户密码的时候又用
+
+
+umask：遮罩码
+创建文件：666-umask
+创建目录：777-umask
+
+对于root用户umask是022
+对于普通用户umask是002
+
+# umask 显示当前的umask
+# umask 022 设定umask
+
+例如：
+设定umask 为023
+理论上来讲 创建的文件权限应该是：666-023 = 643  但是我们实际会发现，创建的文件回事644，这是因为Linux里面默认创建文件不允许有执行权限，如果不小心有了，就会自动加1
+         创建的目录权限应该是：777-023 = 754
+         
+
+------------------------------------------------------
+站在用户登录的角度来说，SHELL的类型
+登录式SHELL：
+   正常通过某终端登录
+   su - USERNAME
+   su -l USERNAME
+非登录式SHELL：
+   su USERNAME
+   图形终端下打开的命令窗口
+   自动执行的shell脚本
+------------------------------------------------------
+
+------------------------------------------------------
+bash的配置文件
+全局配置
+   /etc/profile,/etc/profile.d/*.sh,/etc/bashrc,
+
+个人配置
+   ~/.bash_profile,~/.bashrc,
+
+
+profile类的文件：
+   设定环境变量
+   运行命令或脚本
+
+bashrc类的文件：
+   设定本地变量
+   定义命令别名
+------------------------------------------------------
+
+------------------------------------------------------
+登录式SHELL是怎样读取配置文件的？
+/etc/profile --> /etc/profile.d/*.sh --> ~/.bash_profile --> ~/.bashrc --> /etc/bashrc
+
+非登录式SHELL是怎样读取配置文件的？
+~/.bashrc --> /etc/bashrc --> /etc/profile.d/*.sh
+------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
