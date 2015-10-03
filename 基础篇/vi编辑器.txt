@@ -144,9 +144,70 @@ ZZ:保存并退出
          |     |-------------------------> 结束行
          |-------> 起始行
 
+   1,$ : 表示全文
+   %   : 也表示全文
+   
+十六、使用vim编辑多个文件
+   vim FILE1 FILE2 FILE3 ...
+   :next  => 切换到下一个文件
+   :prev  => 切换到上一个文件
+   :last  => 切换到最后一个文件
+   :first => 切换到第一个文件
+   :qa 全部退出
+   
+十七、分屏显示一个文件
+   CTRL+w, s : 水平拆分窗口, 先按住CTRL与w键，松开后按s键
+   CTRL+w, v : 垂直拆分窗口, 先按住CTRL与v键，松开后按v键
+   CTRL+w, ARROW : 在窗口键切换光标，首先按住CTRL与w键，松开后按方向键
 
+十八、分窗口显示多个文件
+   vim -o FILE1 FILE2 ... : 水平分割显示
+   vim -O FILE1 FILE2 ... : 垂直分割显示
+   
+   光标切换同上（十七）
 
+十九、将当前文件的部分内容另存为另外一个文件
+   末行模式下使用w命令
+   :w 保存当前文件
+   :ADDR1,ADDR2w /PATH/TO/SOMEFILE
+      |     |          |
+     起始行 结束行    要保存到哪个文件
 
+二十、将另外一个文件的内容填充到当前文件中
+   :r /path/to/somfile
+
+二十一、跟shell交互
+   :! COMMAND
+         |--------> shell命令
+         
+二十二、高级话题
+1、显示或取消行号
+   :set number 或者 :set nu  显示行号
+   :set nonumber 或者:set nonu 取消显示行号
+
+2、显示忽略或区分大小写
+   :set ignorecase 或者 :set ic 不区分大小写
+   :set noignorecase 或者 :set noic 区分大小写
+   
+3、设定自动缩进
+   :set autoindent 或者 :set ai 自动缩进
+   :set noautoindent 或者 :set noai 取消自动缩进
+
+4、查到的文本高亮显示或者取消高亮显示
+   :set hlsearch 设置高亮
+   :set nohlsearch 取消高亮显示
+   
+5、语法着色
+   :syntax on  开启语法着色
+   :syntax off 关闭语法着色
+
+二十三、VIM的配置文件
+   /etc/vimrc : 全局的配置
+   ~/.vimrc : 自己的vim配置  这个文件可能不存在，但是可以自己去建立
+   
+
+ 二十四：vimtutor
+   这是一个VIM的教程
 
 
 
