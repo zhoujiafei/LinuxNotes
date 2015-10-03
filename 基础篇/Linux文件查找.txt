@@ -1,0 +1,155 @@
+文件查找
+
+locate:
+   非实时，模糊匹配，查找是根据全系统数据库运行的
+   updatedb 命令，手动生成文件数据库
+   
+速度快
+
+find:
+   实时
+   精确
+   支持多种查找标准
+   便利指定目录中的所有文件完成查找，所以速递相当慢
+
+find 查找路径 查找标准 查找到以后的处理动作
+
+查找路径：默认为当前目录
+查找标准：默认为指定路径下的所有文件
+处理动作：默认为显示
+
+匹配标准：
+   -name 'FILENAME' : 对文件名作精确匹配
+      文件名通配：
+         * : 任意长度的任意字符
+         ? :
+         []:
+         ...
+
+   -iname 'FILENAME' : 对文件名精确匹配不区分大小写
+   -regex PATTERN : 基于正则表达式来实现文件名匹配
+   -user USERNAME : 根据属主查找
+   -group GROUPNAME : 根据数组查找
+   -uid UID : 根据UID查找
+   -gid GID : 根据GID查找
+   -nouser  : 查找没有属主的文件
+   -nogroup : 查找没有数组的文件
+   
+   -type : 根据文件类型来查找
+            f : 普通文件
+            d : 目录
+            c : 字符设备
+            b : 块设备
+            l : 链接文件
+            p : 管道设备
+            s : 套接字设备
+   
+   -size : 根据文件大小来查找
+         [+|-]#k
+         [+|-]#M
+         [+|-]#G    例如： 10k 表示匹配10k大小的文件
+                         +10k 表示大于10k的文件
+                         -10k 表示小于10k的文件
+                    另外：如果数字后面没有跟单位，默认单位是字节
+   -atime             
+   -ctime                                  离现在刚好#天
+   -mtime                        #天之前          |    #天之内   现在
+      [+|-]# 天              --------------------|-------------|---->
+      +# : # 天之前
+      -# : # 天之内
+      #  : 刚好 # 天       
+      
+      例如：find /tmp -atime +7 找出/tmp下至少7天没有访问的文件
+      
+   -mmin
+   -amin
+   -cmin
+      [+|-]# 分钟
+      +# : # 分钟之前
+      -# : # 分钟之内
+      #  : 刚好 # 分钟
+      
+      例如：find /tmp -amin -5 找出/tmp下5分钟之内访问过的文件
+      
+   根据权限来查找 
+   -perm  MODE : 精确匹配
+   -perm /MODE : 9位权限中有任意一位匹配即满足条件
+   -perm -MODE : 文件权限能完全包含此MODE时才符合条件
+
+
+   组合条件：
+      -a : 与   例如： find /tmp -nouser -a -type d
+      -o : 或   例如： find /tmp -nouser -o -type d
+      -not : 非 例如： find /tmp -not -type d
+      
+      例如：find ./ -not -user user1 -o -not -type d  <==> find ./ -not \( -user user1 -a -type d \) 查找当前目录下属主不是user1或者类型不是目录的文件
+      
+动作:
+   -print : 显示（默认这这个动作）
+   -ls    : 类似ls -l的形式显示每一个文件的详细
+   -ok COMMAND \;  : 执行命令
+   -exec COMMAND \;  :  执行命令   例如: find ./ -perm 007 -exec chmod o-w {} \;
+   
+   注意：-ok 与 -exec 的区别在于前者需要确认，而后者不需要确认
+        在COMMAND里面，我们通常使用{} 来引用我们查找到的文件。例如：find . -type f -exec mv {} {}.new \; 找到当前目录下的普通文件，并且将找到的文件文件名重名为原来的名字后面加.new
+        后面\; 必须要有，不能省略
+
+练习题:
+1、查找/var目录下属主为root，并且数组为mail的所有文件
+find /var -user root -group mail
+2、查找/user目录下不属于root、bin或者student的文件
+find /user -not -user root -a -not -user bin -a -not -user student
+3、查找/etc目录下最近一周内内容修改过，并且不属于student和root用户的文件
+find /etc -mtime -7 -a -not -user root -a -not -user student
+4、查找当前系统上没有属主或属组并且在最近一天内没有曾被访问过的文件，并且将其属主和属组修改为root
+find / \( -nouser -o -nogroup \) -a -atime -1 -exec chown root:root {} \;
+5、查找/etc目录下大于1M的文件，并且将其文件名写入/tmp/etc.largefiles文件中
+find /etc -size +1M -exec echo {} >> /tmp/etc.largefiles \;
+或者
+find /etc -size +1M | xargs echo >> /tmp/etc.largefiles
+
+6、查找/etc目录下所有用户都没有写权限的文件，并且显示详情信息
+find /etc -not -perm /222 -ls
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              
+         
+      
+   
+      
+   
