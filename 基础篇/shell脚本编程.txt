@@ -46,8 +46,9 @@ bash变量类型：
 
 (四)：位置变量：（通常用在脚本中接收执行脚本时带的参数）
     $1,$2,...
-    shift：每次使用剔除对应的参数
-    
+    shift：每次使用剔除对应的参数，相当于参数移位
+    $0：命令本身
+
     例如：./filetest.sh /etc/fstab /etc/inittab
     $1对应于：/etc/fstab
     $2对应于：/etc/inittab 
@@ -283,8 +284,8 @@ exit # 定义脚本退出码
 !=:测试是否不相等，不相等为真，相等为假
 >:
 <:
--n string:测试字符串是否为空，空位真，不空为假
--z  string:测试指定字符串是否不空，不空为真，空为假
+-n string:测试字符串是否不空，不空为真，空为假
+-z  string:测试指定字符串是否为空，空为真，不空为假
 
 注意：在使用[ $A == $B ]: ==号两边要空格
 
@@ -336,10 +337,48 @@ declear 申明变量
    
 
 
+-------------------case:多分支语句---------------------
+
+case SWITCH in
+
+value1)
+   statement
+   ...
+   ;;
+value2)
+   statement
+   ...
+   ;;
+*)
+   statement
+   ...
+   ;;
+esac
+
+例如:
+#!/bin/bash
+#
+case $1 in
+[0-9])
+   echo 'A number' ;;
+[a-z])
+   echo 'small character' ;;
+[A-Z])
+   echo 'big character' ;;
+*)
+   echo 'special character' ;;
+esac
 
 
+练习题：
+1、写一个脚本，可以接受选项及参数，而后能获取每一个选项，及选项的参数，并能根据选项及参数做出特定的操作，比如：
+adminuser.sh --add tom,jerry --del tom,zhouxingxing -v|--verbose -h|--help
 
-
+2、写一个脚本showlogged.sh，其语法格式为: showlogged.sh -v -c  -h|--help
+   其中-h 选项只能单独使用，用于显示帮助信息
+   -c选项时，显示当前系统上登录的所有用户数；
+   如果同时使用了-v选项，则既显示同时登录的用户数，又显示登录的用户的相关信息
+-------------------case:多分支语句---------------------
 
 
 

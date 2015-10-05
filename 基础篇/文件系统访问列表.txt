@@ -1,0 +1,99 @@
+FACL : Filesystem Access Control List
+利用文件扩展保存额外的访问控制权限
+
+进程在访问一个目录或者文件的时候，执行权限判断的流程
+Owenr --> fascl,user --> Group --> facl, group --> Other
+
+
+
+setfacl : 
+      -m : 设定
+         u:UID:perm  例如：setfacl -m u:hadoop:rw /etc/inittab 设定hadoop用户对/etc/inittab文件具有额外的读写权限
+         g:GID:perm
+         
+         为某个目录设定默认的访问控制列表，任何在这个目录中创建的文件都自动从这个目录继承这个目录为某个用户设定的默认访问控制列表
+         d:u:UID:perm
+         d:g:GID:perm
+         
+         
+         
+      -x : 取消
+         u:UID   例如：setfacl -x u:hadoop 取消hadoop用户的额外user权限
+         g:GID 
+getfacl :
+
+
+
+---Linux里面几个跟用户相关的命令
+w        : 与who类似，不过比who更加详细
+who      : 显示登录到当前系统的用户有哪些
+           例如：写一个脚本，每隔5秒钟，就来看一下hadoop用户有没有登录，如果登录就退出，否则一直运行
+whoami   : 显示当前登录到系统的用户是谁
+last     : 显示/var/log/wtmp文件，显示用户登录历史及系统重启历史
+            -n # : 只显示最近#次的相关信息
+lastb    : 显示/var/log/btmp文件，显示用户错误的登录尝试
+lastlog  : 显示每一个用户最近一次的成功登录信息
+            -u USERNAME 显示特定用户最近一次的登陆信息
+basename : 直接获取一个路径的基名
+            $0 : 执行脚本时的脚本路径及其名称
+mail     : 邮件
+           命令行里面发邮件简单的用法使用-s 选项
+           例如：echo "hello" | mail -s "How Are You?" root
+hostname : 显示当前主机的主机名
+            例如：如果当前主机的主机名不是www.zhoujiafei.com就将其改为www.zhoujiafei.com
+            [ `hostname` != "www.zhoujiafei.com" ] && `hostname www.zhoujiafei.com`
+            
+生成随机数
+RANDOM   : 0-32768 之间的一个随机数 (Linux内置变量) echo $RANDOM
+
+随机数生成器 (熵池)
+/dev/random : 会从熵池里面去取随机数，一旦熵池里面的随机数被取光了之后，就会等待用户填充熵池里面的随机数，所以会阻塞用户取随机数，但是安全性高
+/dev/urandom: 会从熵池里面去取随机数，一旦熵池里面的随机数被取光了之后，会用软件的方式模拟随机数，不会阻塞用户取随机数，所以用起来方便，但是没有上面的那个安全
+
+练习题：写一个脚本，用RANDOM生成10个随机数，并且找出最大数以及最小数
+#!/bin/bash
+#
+let MAX=0
+let MIN=0
+let RAN=0
+for I in {1..10};do
+   RAN=$RANDOM
+   [ $MIN -eq 0 ] && MIN=$RAN
+   echo $RAN
+   if [ $RAN -gt $MAX ];then
+      let MAX=$RAN
+   fi
+
+   if [ $RAN -lt $MIN ];then
+      let Min=$RAN
+   fi
+done
+
+echo "Max number is :$MAX"
+echo "Min number is :$Min"
+
+
+
+
+终端类型分为：
+   console : 控制台
+   pty     : 物理终端(VGA)
+   tty#    : 虚拟控制台(VGA)
+   ttyS#   : 串行终端
+   pts/#   : 伪终端
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
