@@ -381,24 +381,53 @@ adminuser.sh --add tom,jerry --del tom,zhouxingxing -v|--verbose -h|--help
 -------------------case:多分支语句---------------------
 
 
+-------------------while循环--------------------------
+while循环: 适用于循环次数未知的场景,要有退出条件
+语法:
+   while CONDITION;do
+      statement
+      ...
+   done
+
+例如:计算100以内的所有正整数的和
+#!/bin/bash
+#
+declear -i SUM=0
+declear -i I=1
+while [ $I -le 100 ];do
+   let SUM+=$I
+   let I++
+done
+
+echo $SUM
+   
+再来一个例子：当用户输入一个字符串的时候把其转换为大写，如果输入的字符串是quit 就退出
+#!/bin/bash
+#
+read -p "please input a string : " A
+while [ $A != 'quit' ];do
+    echo $A | tr "a-z" "A-Z"
+    read -p "please input a string : " A
+done
+
+echo "您退出了！"
 
 
+写一个脚本，循环检测root用户有没有登陆
+#!/bin/bash
+#
+who | grep "root" &> /dev/null
+RETVAL=$?
 
+while [ $RETVAL -ne 0 ];do
+    echo "`date` root is not log."
+    sleep 5
+    who | grep "root" &> /dev/null
+    RETVAL=$?
+done
 
+echo "root has loggin"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-------------------while循环--------------------------
 
 
