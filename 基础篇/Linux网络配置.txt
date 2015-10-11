@@ -1,0 +1,278 @@
+以太网：
+CSMA/CD : 载波侦听多路访问，冲突检测
+
+[A]   [B]
+ |     |
+----------------------------
+    |         |
+   [C]       [D]
+   
+环形网络
+
+星型网络
+
+
+交换机：
+
+
+子网掩码：是根据IP地址去取网络地址的
+
+套接字：IP:PORT  IP地址与端口号的绑定
+
+
+IPv4:点分十进制:
+0000 0000 ~ 1111 1111
+0 ~ 255
+
+221.34.23.12
+网络地址:
+主机地址:
+
+地址类别:
+A:第1段用于网络地址，后面3段用于主机地址
+  子网掩码: 255.0.0.0 , 8bit长度掩码     
+  (0 000 0001 ~ 0 111 1111)共127个A类，但是127被用于回环，所以有效范围是1~126 一共有(2^7 - 1)个A类网络
+  可容纳(2^24 - 2)个主机
+  主机位全0:网络地址
+  主机位全1:广播地址
+
+B:前2段用于网络地址，后面2段用于主机地址 
+  子网掩码: 255.255.0.0 , 16bit长度掩码    
+  (10 00 0000 ~ 10 11 1111)共64个B类，128~191  一共有(2^14)个B类网络
+  可容纳(2^16 - 2)个主机
+  主机位全0:网络地址
+  主机位全1:广播地址
+C:前3段用于网络地址，最后1段用于主机地址 
+  子网掩码: 255.255.255.0 , 24bit长度掩码    
+  (110 0 0000 ~ 110 1 1111)共32个B类，192~223  一共有(2^21)个C类网络
+  可容纳(2^8 - 2)个主机
+  主机位全0:网络地址
+  主机位全1:广播地址
+D: (111 0 0000 ~ 111 0 1111) 224~293
+E:
+
+
+私有地址:
+   A类:10.0.0.0/8
+   B类:172.16.0.0/16 ~ 172.31.0.0/16
+   C类:192.168.0.0/24 ~ 192.168.255.0/24
+
+
+主机接入网络:
+IP
+NETMASK
+GATEWAY
+HOSTNAME
+DNS1
+DNS2
+DNS3
+   -----------------> 手动指定
+                      DHCP:动态主机设置协议
+                        169.254..
+路由
+
+
+
+网络属于Linux内核的功能
+lo:本地回环（自己既是客户端又是服务端）
+以太网网卡:eth[num]
+点对点连接:ppp[num]
+
+RHEL5: /etc/modprobe.conf
+alias
+
+RHEL6: /etc/udev/rules.d/70-persistent-net.rules
+
+
+
+
+以太网 ethX
+
+ifconfig [ethX] : 可以直接显示当前主机上处于活动状态的网卡信息
+   -a : 显示所有网络接口的配置信息
+    
+ifconfig ethX IP/MASK : 配置某个接口的地址，配置的地址会立即生效，但是重启网络服务或者主机，都会失效
+
+ifconfig ethX [up|down]: 启用或者禁用某个网卡
+   
+网络服务:
+/etc/init.d/network (start|stop|restart|status)
+
+网关:
+route: 不带任何参数的时候，是查看IP路由表
+   add : 添加
+      -host: 主机路由
+      -net : 网络路由
+         -net : 0.0.0.0 默认路由
+   route add -net|-host DEST gw NEXTHOP
+   route add default DEST gw NEXTHOP  添加默认路由
+
+   例如:route add -net 10.0.0.0/8 gw 192.168.10.1
+                           |              |
+                        目标网络          下一跳
+
+   del : 删除
+      -host
+      -net 
+   例如:route del -net 10.0.0.0/8
+       route del -net 0.0.0.0 （default）删除默认路由
+       
+   注意：以上所做的改动，重启网络服务或主机后会失效。
+   
+   -n : 以数字方式显示各主机或端口等相关信息
+   
+网络配置文件：
+   /etc/sysconfig/network
+   配置主机名:
+   HOSTNAME=
+
+
+网络接口配置文件：
+   /etc/sysconfig/network-scripts/ifcfg-INTERFACE-NAME
+   DEVICE=    :  关联的设备名称，要与文件名的后半部INTERFACE-NAME相一致
+   BOOTPROTO= (static|none|dhcp|bootp): 引导协议,要使用静态地址，使用static或者none；dhcp表示使用DHCP服务器获取地址
+   IPADDR=10.168.80.158 : IP地址
+   NETMASK=255.255.248.0 : 子网掩码
+   GATEWAY=: 设定默认网关
+   ONBOOT=(yes|no) : 开机时是否自动激活此网络接口
+   HWADDR=: MAC地址（硬件地址），要与硬件中的地址保持一致，可以省略
+   USERCTL=(yes|no):是否允许普通用户控制此接口
+   PEERDNS=(yes|no):是否在BOOTPROTO为dhcp时接受由DHCP服务器指定的DNS地址
+   
+   注意：配置文件的方式设置不会立即生效，但是重启网络服务器或者主机都会生效
+
+路由的配置文件
+   /etc/sysconfig/network-scripts/route-INTERFACE-NAME
+   添加格式一:
+      DEST via NEXTHOP
+   添加格式二:
+      ADDRESS0=
+      NETMASK0=
+      GATEWAY0=
+   
+   注意:两种格式不能混合使用
+
+DNS服务器指定方法只有一种
+/etc/resove.conf
+   nameserver DNS-IP_1
+   nameserver DNS-IP_2
+   nameserver DNS-IP_3
+      
+   注意:最多只有三个
+
+指定本地解析
+   /etc/hosts
+   主机IP  主机名  主机别名（可以省略）
+   
+   使用主机名访问目标地址的过程是先到--->/etc/hosts里面查看要访问的主机名有么有对应的IP如果找到就用这个ip，没有找到就再看DNS里面找
+   
+
+RHEL5:
+   setup:system-config-network-tui
+   system-config-network-gui
+   
+   
+iproute2:
+   ip 
+      link:网络接口属性
+      addr:协议地址
+      route:路由
+      
+   link
+      show
+         ip -s link show :显示网卡信息
+      set 
+         ip link set DEV [up|down] : 启用或者禁用网卡
+   
+   addr
+      add : 为网络接口设备添加辅助地址 
+         ip addr add ADDRESS dev DEV : 例如：ip addr add 10.2.2.2/8 dev eth0
+         也可以使用label指定别名
+         ip addr add ADDRESS dev DEV label NAME 例如：ip addr add 10.2.2.2/8 dev eth0 label eth0:0
+      del : 删除地址
+         ip addr del ADDRESS dev DEV : 
+         
+      show: 
+         ip addr show dev DEV to PREFIX
+      flush: 可以一次删除多个地址
+         ip addr flush dev DEV to PREFIX
+      
+         
+      
+      
+      
+      
+
+一块网卡可以使用多个地址
+网络设备可以别名
+eth0
+   ethX:X ,eth0:0 ,...
+   
+配置方法:
+   ifconfig ethX:X IP/NETMASK         : 这个是临时有效
+   例如: ifconfig eth0:0 172.16.200.33/16
+   
+   编辑:/etc/sysconfig/network-scripts/ifcfg-ethX:X
+       DEVICE=ethX:X
+       
+   别名（分主要地址）不能使用DHCP动态获取
+   
+
+   
+   
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

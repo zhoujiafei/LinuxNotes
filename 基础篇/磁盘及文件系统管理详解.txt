@@ -78,7 +78,7 @@ df : 查看硬盘分区情况
    次设备号 (minor number)
       标识同一种类型中的不同设备
 
-mknod
+mknod : 创建设备文件
    mknod [OPTION] ... NAME TYPE [MAJOR MINOR]
       -m MODE (在创建设备文件的同时，指定权限) 例如 : mknod -m 640 mydev b 66 0
       
