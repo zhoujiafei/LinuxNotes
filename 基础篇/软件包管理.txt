@@ -155,7 +155,21 @@ rpm命名:
    rpm -Fvh /PATH/TO/PACKAGE_FILE : 如果装有老版本的则升级，否则，退出
        --oldpackage : 降级
    
-4、
+4、卸载
+   rpm －e PACKAGE_NAME
+       --nodeps : 忽略依赖的包
+
+5、校验
+   rpm -V PACKAGE_NAME
+
+6、
+
+7、验证来源合法性，及软件包完整性
+   加密类型:
+      对称:加密解密使用同一个密钥
+      公钥:一对儿密钥，公钥。私钥；公钥隐含于私钥中，可以提取出来，并且公开出去
+      单向:
+
     
    
    
