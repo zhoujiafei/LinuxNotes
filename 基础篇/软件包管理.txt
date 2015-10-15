@@ -171,9 +171,34 @@ rpm命名:
       单向:
 
     
+yum:
+   C/S 架构:Client Server
+   yum repository
    
+yum仓库中的元数据文件
+   primary.xml.gz
+      包含了:1.所有RPM包的列表
+            2.依赖关系
+            3.每个RPM安装生成的文件列表
    
-       
+   filelists.xml.gz
+      包含了:1。当前仓库中所有RPM包的所有文件列表
+   
+   other.xml.gz
+      包含了:1.额外信息,RPM包的修改日志
+   
+   repomd.xml
+      记录了上面的三个文件的时间戳和校验和
+      
+   comps*-.xml: RPM分组信息
+   
+如何为yum定义repo文件格式
+[Repo_ID]
+name=Desciption
+baseurl=仓库所在的具体位置
+   1.ftp:// ftp地址
+   2.http:// web地址
+   3.file:/// 本地文件路径
 
 
 

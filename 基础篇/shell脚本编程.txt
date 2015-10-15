@@ -431,3 +431,37 @@ echo "root has loggin"
 -------------------while循环--------------------------
 
 
+
+-------------------until循环--------------------------
+until循环:执行一系列命令直至条件为 true 时停止。与while刚好相反
+
+until command
+do
+   Statement(s) to be executed until command is true
+done
+
+例如:
+#!/bin/bash
+
+a=0
+
+until [ ! $a -lt 10 ]
+do
+   echo $a
+   a=`expr $a + 1`
+done
+
+-------------------until循环--------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
