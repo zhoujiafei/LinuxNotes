@@ -199,38 +199,112 @@ baseurl=仓库所在的具体位置
    1.ftp:// ftp地址
    2.http:// web地址
    3.file:/// 本地文件路径
+enabled={1|0}
+gpgcheck={1|0}
+gpgkey=
+
+yum [option] [command] [package ...]
+
+   list : 列表
+   clean : 清理缓存
+   
+repolist:显示repo列表及其简要信息
+   all
+   enabled : 默认
+   disabled : 
+   
+install : 安装
+yum install PACKAGE_NAME
+
+update : 升级
+update_to : 升级为指定的版本
+
+remove|erase : 卸载
+
+provides|whatprovides:查看指定的文件或特性是由那个包安装生成的
+
+groupinfo
+grouplist
+groupinstall
+groupremove
+groupupdate
 
 
 
+/media/cdrom/{Server,VT,Cluster,ClusterStorage}
+
+如何创建yum仓库
+
+createrepo
 
 
+-------------------------------------------------------------------------
+RPM安装:
+   二进制格式
+   源程序-->编译-->二进制格式
+      有些特性是编译选定的，如果编译未选定此特性，将无法使用:
+      rpm包的版本会落后于源码包，甚至会落后很多
+      
 
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+定制安装:手动编译安装
+   编译环境，开发环境
+      C,C++ :
+         gcc : GNU C Compiler 针对于 C
+         g++ : 针对于C++
+         make : 项目管理工具
+            makefile:定义了make (gcc,g++)按照何种次序去编译源程序文件中的源程序
+            install : 安装
+         
+         automake:用于生成makefile.in文件
+         autoconf:用于生成configure文件，用于配置我们当前的程序是如何编译的，通过configure脚本文件指定好特性再结合makefile.in文件从而生成makefile文件
+                  之后就可以使用make命令结合makefile文件，按照指定的方式对源程序进行编译，编译好二进制文件之后，放到指定的目录就可以安装了  
+   开发库，开发工具
+   
+编译安装的三个步骤：
+前提：准备开发环境（编译环境）
+安装"Development Tools" 和 "Development Libraries"
 
 
+1、./configure
+      --help : 帮助信息
+      --prefix=/path/to/somewhere : 指定软件安装的路径
+      --sysconfdir=/PATH/TO/CONFFILE_PATH : 指定配置文件路径
+      功能:1.让用户选定编译特性
+          2.检查编译环境
+2、make
+3、make install
+      
+例如：下面代码演示怎样安装tengine
+# tar xf tengine-1.4.2.tar.gz
+# cd tengine-1.4.2
+# ./configure --prefix=/usr/local/tengine --conf-path=/etc/tengine/tengine.conf
+# make
+# make install
 
+在安装完成之后，通常需要做的工作:
+1.修改PATH环境变量，以能够识别此程序的二进制文件的路径
+   （1）编辑/etc/profile文件
+    (2) 在/etc/profile.d/目录建立一个一.sh为后缀的文件，在里面定义export PATH=$PATH:/PATH/TO/SOMEWHERE
+2.默认情况下，系统搜索库文件的路径/lib,/usr/lib;要增添额外搜寻路径,在/etc/ld.so.conf.d/中创建以.conf为后缀的文件，而后将要增添的路径直接写至此文件中.
+  ldconfig : 重新搜寻库文件
+      -v : 显示重新搜寻库文件的过程
+3.头文件:输出给系统
+  默认:/usr/include
+  增添头文件的搜索路径，使用链接进行: 例如：将/usr/local/tengine/include下所有文件软链到/usr/include/下
+                                     ln -s /usr/local/tengine/include/* /usr/include/ 或 
+                                     ln -s /usr/local/tengine/include /usr/include/tengine
+4.man文件路径
+  默认安装在--prefix指定的目录下的man目录; 系统命令的man文件路径在:/usr/share/man
+      man有两种方式寻找man文件:
+      1.man -M /PATH/TO/MAN_DIR COMMAND
+      2.在/etc/man.config文件中添加一条MANPATH
+      
+
+netstat命令:
+   -r : 显示路由表
+   -n : 以数字的方式显示路由表
+   -t : 建立的tcp连接
+   -u : 显示udp连接
+   -l : 显示监听状态的连接
+   -p : 显示监听指定的套接字的进程的进程号
+   
