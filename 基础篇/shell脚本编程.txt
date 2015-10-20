@@ -454,6 +454,58 @@ done
 -------------------until循环--------------------------
 
 
+-------------------函数--------------------------
+function:功能
+结构化编程，不能独立运行，需要调用时执行，可以被多次调用
+
+定义一个函数:
+   function FUNCNAME {
+      COMMAND
+   }
+   
+   FUNCNAME() {
+      COMMAND
+   }
+
+调用函数:
+   FUNCNAME
+   
+自定义执行状态返回值:
+   return STATE_NUM(0-255)
+   
+接受参数的函数:
+   调用的时候传参:FUNCNAME ARG1 ARG2 ...
+   在函数体内接收参数:$1 对应 ARG1
+                  $2 对应 ARG1
+                  ...
+
+注意：在调用函数的时候，如果使用反引号`包裹起来，是获取函数体中echo的信息
+     直接执行，如果函数中有return，则返回的是状态码
+
+例如:
+#!/bin/bash
+#
+ADDUSER() {
+USERNAME=$1
+if ! id -u $USERNAME &> /dev/null;then
+   useradd $USERNAME
+   echo $USERNAME | passwd --stdin $USERNAME &> /dev/null
+   return 0
+else
+   return 1
+fi
+}
+
+for I in {1..10};do
+   ADDUSER user$I
+   if [ $? -eq 0 ];then
+      echo "add user$I Finished"
+   else
+      echo "add user$I failure"
+   fi
+done
+-------------------函数--------------------------
+
 
 
 
