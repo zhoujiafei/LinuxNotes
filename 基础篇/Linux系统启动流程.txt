@@ -1,0 +1,44 @@
+Linux系统启动流程
+
+POST (Power On Self Testing 加电自检) --> BIOS(Boot Sequence) --> MBR(bootloader,446byte) --> kernel -->initrd -->(ROOTFS) /sbin/init(/etc/inittab)
+
+内核设计风格:
+1.单内核 : Linux 属于单内核
+     核心:ko (kernel object) 动态加载，内核模块 (内核的位置:/boot/vmlinuz-版本号)
+     内核模块:/lib/modules/"内核版本号命令的目录"/
+2.微内核 : Windows ,Solaris
+
+RedHat5 : randisk --> initrd
+RedHat6 : ramfs --> initramfs
+
+ldd : 显示二进制文件所依赖的共享库
+用法: ldd [OPTION] /PATH/TO/BINARY_FILE
+     例如: ldd /bin/bash
+     
+chroot : 切换根目录
+   chroot /PATH/TO/TEMPROOT [COMMAND]
+
+
+-------------------------------------
+启动的服务不动，运行级别不同
+   运行级别: 0 - 6
+   0 : halt 关机
+   1 : single user mode,直接以管理员身份切入
+   2 : multi user mode ,no NFS ,多用户模式,但是不启用NFS
+   3 : multi user mode,text mode,正常情况下的多用户模式，是命令行的模式
+   4 : reserved 保留模式
+   5 : multi user mode,graphic mode,正常情况下的多用户模式，是图形界面的模式
+   6 : reboot 重启
+在/etc/inittab下可以设置默认启动的级别
+-------------------------------------
+
+详解启动过程:
+   bootloader(MBR)
+      LILO : LInux LOader
+      GRUB : GRand Unified Bootloader
+         Stage1 : MBR (这个阶段是为了引导第二阶段)
+         Stage1_5 : 帮助识别文件系统
+         Stage2 : /boot/grub
+
+
+
