@@ -112,7 +112,8 @@ find /etc -size +1M | xargs echo >> /tmp/etc.largefiles
 find /etc -not -perm /222 -ls
 
 
-
+例如：查找当前目录下的所有以.php结尾的包含字符串"JInputCLI"的文件
+   find ./* -type f -name '*.php' |xargs grep 'JInputCLI'
 
 
 

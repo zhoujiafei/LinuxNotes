@@ -242,8 +242,8 @@ dd命令:（复制数据流）
    count : 一共复制多少个这样的单位，例如count=2 一共复制2个单位,结合上面，就是复制每个单位1024个字节，共两个单位，一起2048个字节
    seek : 创建数据文件的时候，跳过的空间大小
 
-例如：dd /dev/sda /mnt/usb/mbr.backup bs=512 count=1 这个就相当于备份设备的MBR
-     dd /mnt/usb/mbr.backup /dev/sda  bs=512 count=1 还原设备的MBR
+例如：dd if=/dev/sda of=/mnt/usb/mbr.backup bs=512 count=1 这个就相当于备份设备的MBR
+     dd if=/mnt/usb/mbr.backup of=/dev/sda  bs=512 count=1 还原设备的MBR
 
     
 

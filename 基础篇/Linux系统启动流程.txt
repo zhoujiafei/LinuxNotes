@@ -23,7 +23,7 @@ chroot : 切换根目录
 启动的服务不动，运行级别不同
    运行级别: 0 - 6
    0 : halt 关机
-   1 : single user mode,直接以管理员身份切入
+   1 : single user mode,直接以管理员身份切入, 在编辑模式的时候可以用1,s,S,single 来指定此模式
    2 : multi user mode ,no NFS ,多用户模式,但是不启用NFS
    3 : multi user mode,text mode,正常情况下的多用户模式，是命令行的模式
    4 : reserved 保留模式
@@ -39,6 +39,106 @@ chroot : 切换根目录
          Stage1 : MBR (这个阶段是为了引导第二阶段)
          Stage1_5 : 帮助识别文件系统
          Stage2 : /boot/grub
+         
+groub.conf里面的详解:
+
+******************************************************************************
+default=0 # 设定默认启动的title编号
+timeout=5 # 等待用户选择的超时时长，单位是秒
+splashimage=(hd0,0)/boot/grub/splash.xpm.gz # grub的背景图片
+hiddenmenu # 隐藏菜单
+
+password [在此输入密码]
+password --md5 [在此输入md5的密码（使用 grub-md5-crypt 去生成）]
+
+title CentOS (2.6.32-431.23.3.el6.x86_64) # 内核标题，或者操作系统名称，字符串，可以自由修改
+        root (hd0,0) # 内核文件所在的设备;对grub而言，所有类型硬盘一律hd，格式为(hd#,N): #表示第几个磁盘;最后的N表示对应磁盘的分区
+        kernel /boot/vmlinuz-2.6.32-431.23.3.el6.x86_64 ro root=UUID=94e4e384-0ace-437f-bc96-057dd64f42ee rd_NO_LUKS rd_NO_LVM LANG=en_US.UTF-8 rd_NO_MD SYSFONT=latarcyrheb-sun16 crashkernel=auto  KEYBOARDTYPE=pc KEYTABLE=us rd_NO_DM rhgb quiet # 内核文件路径以及传递给内核的参数
+        initrd /boot/initramfs-2.6.32-431.23.3.el6.x86_64.img #rawdisk文件路径
+        password --md5 [在此输入md5的密码（使用 grub-md5-crypt 去生成）] 如果密码放在这表示启动内核的时候必须要输入密码
+******************************************************************************
+
+在命令行中直接输入 grub-md5-crypt 可以生成用于grub的md5加密的密码
+        
+-------------------------------------
+
+查看运行级别:
+   runlevel
+   who -r
+
+查看内核release号
+   uname -r
+   
+-------------------------------------
+安装grub stage1
+# grub
+grub> root (hd0,0)
+grub> setup (hd0)
+
+安装grub的第二种方式
+# grub-install --root-directory=/path/to/boot's_parent_dir /PATH/TO/DEVICE
+
+grub> find
+grub> root (hd#,N)
+grub> kernel /PATH/TO/KERNEL_FILE
+grub> initrd /PATH/TO/INITRD_FILE
+grub> boot
+
+-------------------------------------
+Kernel的初始过程
+1、设备探测
+2、驱动初始化(可能会从initrd（initramfs）文件中装载驱动模块)
+3、以只读方式挂载根文件系统
+4、转载第一个进程init(PID:1)
+
+/sbin/init : (读取/etc/inittab 配置文件)
+   upstart : ubuntu 开发 使用d-bus 来配置的,基于event来实现驱动的
+   systemd : 
+
+在/etc/inittab文件中，每一行定义需要执行的进程
+   id:runlevels:action:process
+   
+   id: 标识符
+   runlevels:运行级别
+   action:执行动作（在什么情况下执行）
+      initdefault:设定默认运行级别
+      sysinit: 系统初始化
+      wait:等待级别切换至此级别时执行
+      ctrlaltdel:同时按下ctrl+alt+del键的时候
+      powerfail:系统断电的时候
+      powerokwait:电又来了的时候
+      respawn:一旦指定的程序终止会重新启动
+   process:要运行的程序
+   例如: si::sysinit:/etc/rc.d/rc.sysinit : 表示这个进程在所有运行级别下在系统初始化的时候执行/etc/rc.d/rc.sysinit这个程序
+   
+/etc/rc.d/rc.sysinit完成的任务:
+1、激活udev和selinux
+2、根据/etc/sysctl.conf文件，来设定内核参数
+3、设定系统时钟
+4、装载键盘映射
+5、启用交换分区
+6、设置主机名
+7、根据文件系统检测，并且以读写方式重新挂载
+8、激活RAID和LVM设备
+9、启动磁盘配额
+10、根据/etc/fstab，检查并且挂载其他文件系统
+11、清理过期的锁和PID文件
+
+
+
+
+      
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
 
 
