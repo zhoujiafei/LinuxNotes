@@ -97,7 +97,7 @@ Kernel的初始过程
 
 在/etc/inittab文件中，每一行定义需要执行的进程
    id:runlevels:action:process
-   
+
    id: 标识符
    runlevels:运行级别
    action:执行动作（在什么情况下执行）
@@ -110,7 +110,18 @@ Kernel的初始过程
       respawn:一旦指定的程序终止会重新启动
    process:要运行的程序
    例如: si::sysinit:/etc/rc.d/rc.sysinit : 表示这个进程在所有运行级别下在系统初始化的时候执行/etc/rc.d/rc.sysinit这个程序
+        这个脚本完成OS的初始化
    
+/etc/inittab这个文件的任务:
+1、设定默认运行级别
+2、运行系统初始化脚本
+3、运行指定运行级别对应的目录下的脚本
+4、设定ctrl+alt+del组合键的操作
+5、定义UPS电源在电源故障/恢复时执行的操作
+6、启动虚拟终端（2、3、4、5级别）
+7、启动图形终端（只在5级别）
+
+
 /etc/rc.d/rc.sysinit完成的任务:
 1、激活udev和selinux
 2、根据/etc/sysctl.conf文件，来设定内核参数
@@ -123,6 +134,36 @@ Kernel的初始过程
 9、启动磁盘配额
 10、根据/etc/fstab，检查并且挂载其他文件系统
 11、清理过期的锁和PID文件
+
+-------------------------------------
+/etc/rc.d/init.d <==> /etc/init.d : 后面是前面的链接,表示同一个
+这里面都是服务类脚本
+
+服务类脚本:
+   SysV风格: /etc/rc.d/init.d 里面的脚本，一般要接收参数:
+            start | stop | restart | status | reload | configtest
+            
+在/etc/rc.d/init.d里面的脚本都有下面两行:
+# chkconfig: [runlevels] [SS] [KK]
+      这行的意思:当chkconfig命令来为此脚本在rc#.d目录创建链接时,runlevels表示默认创建为S*开头的链接,除此之外的级别默认创建为K*开头的链接:
+      S后面的启动优先级为SS所表示的数字,K后面关闭优先级次序为KK所表示的数字（如果runlevels为-表示没有级别默认为S*开头的链接）
+# description: 用于说明此脚本的简单功能: \ 表示续行
+
+chkconfig命令:
+   --list : 查看所有独立守护服务的启动设定，独立守护进程,例如: chkconfig --list
+   --add SERVER_NAME : 生成上面所属的对应的链接文件
+   --del SERVER_NAME : 移除该服务相关的链接
+   --level RUN_LEVELS SERVER_NAME (on|off) 修改指定级别的启动还是关闭
+   
+
+/etc/rc.d/rc.local : 系统最后启动的一个服务,准确说,应该执行的一个脚本
+
+-------------------------------------
+守护进程的类型：
+   独立守护进程
+   xinetd : 超级守护进程，代理人
+      瞬时守护进程，不需要关联至运行级别
+
 
 
 
