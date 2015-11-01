@@ -165,7 +165,142 @@ chkconfig命令:
       瞬时守护进程，不需要关联至运行级别
 
 
+-------------------------------------
+核心:/boot/vmlinuz-version
+内核模块:(ko) /lib/modules/version
 
+内核设计:
+   单内核:
+      模块化设计
+   微内核:
+
+装载模块:
+   insmod
+   modprobe
+
+用户空间访问、监控内核的方式:
+/proc,/sys : 都是伪文件系统
+
+/proc/sys : 此目录中的很多文件是可读写的
+/sys/ : 某些文件可写
+
+设定内核参数值的方法:
+(1) echo VALUE > /proc/sys/SOMEFILE : 例如使用: echo "www.zhoujiafei.com" > /proc/sys/kernel/hostname 来修改主机名
+(2) sysctl -w variable=value : (这里的variable是/proc/sys/目录下的路径子目录之间用.来替代)，例如上面的例子就可以这样操作:sysctl -w kernel.hostname="www.zhoujiafei.com"
+
+注意：通过以上的两种方式能够立即生效，但是不能永久有效
+
+如果想永久有效，通过编辑:/etc/sysctl.conf，但是不会立即生效
+sysctl -p : 在编辑完/etc/sysctl.conf之后，可以使用此命令立即生效
+sysctl -a : 显示所有内核参数及其值
+
+
+内核模块管理:
+lsmod : 查看已经装载的内核模块
+modprobe MOD_NAME : 装载某个模块
+modprobe -r MOD_NAME : 卸载某个模块
+modinfo MOD_NAME : 查看模块的具体信息
+insmod /PATH/TO/MODULE_FILE : 装载模块
+rmmod MOD_NAME : 卸载某个模块
+depmod /PATH/TO/MODULES_DIR : 生成模块依赖关系表，生成的文件保存在后面指定的目录中
+
+注意:在Linux中内核模块必与内核版本相一致
+
+内核中的功能，除了核心功能之外，在编译时，大多功能都有三种选择:
+1、不适用此功能
+2、编译成内核模块
+3、编译进内核
+
+如何手动编译内核:
+make gconfig: Gnome桌面环境使用，需要安装图形开发库组:GNOME Software Development
+make kconfig: KDE桌面环境使用，需要安装图形开发库
+
+make menuconfig : 启动图形界面编辑内核配置
+然后
+make
+make modules install
+make install
+
+使用远程连接编译的时候，通常使用screen，即使断掉也没有关系
+screen命令:
+screen -ls : 显示已经建立的屏幕
+screen : 直接打开一个新的屏幕
+screen -r ID : 还原回某屏幕
+CTRL+a，松开之后按d键可以拆除屏幕
+exit:退出某个screen
+
+二次编译时清理，如果有需要，请备份配置文件.config:
+make clean
+make mrproper
+
+-------------------------------------
+/etc/issue: 这个文件里面的信息，就是一登陆显示的信息
+PAM: Pluggable Authentication Module
+   /etc/pam.d/* : 插入式认证模块
+   
+nsswitch: Network Service Switch ==> 网络服务转换
+框架：
+   库:libnss_files.so,libnss_nis.so,libnss_ldap.so
+   配置文件:/etc/nsswitch.conf
+   
+
+-------------------------------------
+内核编译:
+busybox:二进制
+
+查看本机硬件信息:
+1、cat /proc/cpuinfo : 查看CPU信息
+2、lsusb : 列出本机USB接口
+3、lspci : 查看总线设备
+4、hdl-device : 硬件抽象层
+
+编译内核:
+1、配置
+make menuconfig
+make gconfig
+make kconfig
+make oldconfig
+make config
+
+保存为.config文件
+
+2、
+make 
+make modules_install
+make install
+
+模块安装位置:/lib/modules/KERNEL_VERSION
+
+如何实现部分编译:
+(1)只编译某子目录下的相关代码
+   make dir/
+   make arch/
+   make drivers/net
+   ...
+(2)只编译部分模块
+   make M=drivers/net
+   ...
+(3)只编译某一个模块
+   make drivers/net/pcnet32.ko
+   ...
+(4)将编译完成的结果放置在别的目录中
+   make O=/tmp/kernel
+   
+(5)交叉编译
+   make ARCH=
+   
+如何编译busybox?
+
+
+
+
+
+
+
+
+
+
+ 
 
 
       

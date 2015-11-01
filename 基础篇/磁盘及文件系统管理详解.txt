@@ -190,7 +190,7 @@ mount 设备 挂载点
          
 一旦挂载完成，要通过挂载点访问对应文件系统上的文件
 
-mount : 不带参数的时候，显示当前系统已经挂载的设备及挂载点
+mount : 不带参数的时候，显示当前系统已经挂载的设备及挂载点( cat /proc/mounts 是同样的功能)
 mount [OPTION] [-o OPTION] DEVICE MOUNT_POINT
       -a : 表示挂载/etc/fstab文件中定义的所有文件系统
       -n : 默认情况下,mount命令每挂载一个设备,都会把挂载的信息保存到/etc/mtab文件中,使用-n选项意味着挂载设备时,不把信息写入此文件
