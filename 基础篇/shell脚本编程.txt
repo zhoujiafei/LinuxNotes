@@ -507,20 +507,48 @@ done
 -------------------函数--------------------------
 
 ------------------------------------------------
-变量中字符串的长度:${#VAR_NAME}
+一、变量中字符串的长度:${#VAR_NAME}
 A = "start"
 echo ${#A} :像这样就可以获取字符串的长度
 
-变量赋值等:
+二、变量赋值等:
 ${parameter:-word}: 如果parameter为空，或者未定义，则变量展开为"word"，否则展开为parameter值
 ${parameter:+word}: 如果parameter为空，或者未定义，不做任何操作，否则展开为word值
 ${parameter:=word}: 如果parameter为空，或者未定义，则变量展开为"word"，并将展开后的值赋值给parameter
 ${parameter:=offset}:
 ${parameter:=offset:length}: 取子串，从offset处的后一个字符开始，取length的长度
 
+三、引用其他文件
+source /PATH/TO/FILE
+或者
+. /PATH/TO/FILE
 
+四、局部变量：在函数中使用变量的时候，如果改变量只是在函数内里面使用需要申明local,如果不申明，外部存在同名的变量，将会影响到外部变量
+local VAR_NAME
 
+五、命令mktemp：创建临时文件或者目录
+例如:mktemp /tmp/file.XXX ，就会自动生成不会重名的文件
+    mktemp -d /tmp/dir.XXX 价格-d 选项是创建目录
 
+六、信号
+kill -SIGNAL PID
+   1:HUP
+   2:INT
+   9:KILL
+   15:TERM
+   
+脚本中，能够实现信号捕捉，但是9信号和15信号不能捕捉
+
+trap命令:可以实现信号捕捉
+   用法:trap 'COMMAND' 信号列表
+   例如:
+   #!/bin/bash
+   #
+   trap 'echo "you go"' INT
+   while :;do
+      date
+      sleep
+   done
 
 
 
