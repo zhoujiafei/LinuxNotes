@@ -351,7 +351,13 @@ make install
             所以我们在执行脚本的时候，通常直接写命令的绝对路径，例如上面的/bin/cat
             如果是脚本的话，通常在脚本里面export PATH 使用脚本自身的PATH变量
          
-      
+      用户任务的管理:
+         crontab: 
+            -l : 列出当前用户的所有cron任务
+            -e : 编辑任务
+            -r : 移除所有任务
+            -u USERNAME : 管理其他用户的cron任务
+         anacrontab :
       
    
 

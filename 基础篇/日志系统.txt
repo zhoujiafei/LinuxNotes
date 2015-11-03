@@ -1,0 +1,171 @@
+===Linux上的日志系统==
+syslog
+syslog-ng : 开源的
+
+信息详细程序:日志级别
+子系统 : facility ,设施
+动作:
+
+syslog服务:
+   1. syslogd : 系统，非内核产生的信息
+            /sbin/init 之后产生的属于飞内核日志：
+                  一般保存在:/var/log/messages:系统标准错误日志信息
+                           /var/log/maillog:邮件系统产生的日志信息
+                           /var/log/secure : 记录安全相关的信息
+
+   2. klogd : 内核，专门负责记录内核产生的日志信息
+            kernel --> 物理终端(/dev/console) --> /var/log/dmesg
+            # dmesg
+            # cat /var/log/dmesg
+            这个属于内核日志
+            
+   3. 配置文件:/etc/syslog.conf
+
+日志需要滚动:logrotate
+
+
+
+一、syslog日志服务：
+   1、守护进程：syslog
+   2、端口：514
+   3、配置文件:/etc/syslog.conf
+   4、常见日志文件:
+      /var/log/dmesg   内核引导信息日志
+      /var/log/message   标准系统错误信息日志
+      /var/log/maillog   邮件系统信息日志
+      /var/log/cron   计划任务日志
+      /var/log/secure   安全信息日志
+二、 配置文件：
+   syslog配置文件如下
+   -----------------------------------------------------------------
+   [root@server ~]# vim /etc/syslog.conf
+   # Log all kernel messages to the console.
+   # Logging much else clutters up the screen.
+   #kern.*                                                 /dev/console
+   # Log anything (except mail) of level info or higher.
+   # Don't log private authentication messages!
+   *.info;mail.none;authpriv.none;cron.none                /var/log/messages
+   # The authpriv file has restricted access.
+   authpriv.*                                              /var/log/secure
+   # Log all the mail messages in one place.
+   mail.*                                                  -/var/log/maillog
+   # Log cron stuff
+   cron.*                                                  /var/log/cron
+   # Everybody gets emergency messages
+   *.emerg                                                 *
+   # Save news errors of level crit and higher in a special file.
+   uucp,news.crit                                          /var/log/spooler
+   # Save boot messages also to boot.log
+   local7.*     
+   -----------------------------------------------------------------
+
+配置文件中每行表示一个项目，格式为：facility.level    action
+由两个部分组成:
+第一部分：选择条件（可以有一个或者多个条件），分为两个字段。
+第二部分：操作动作；
+    1、选择条件
+
+选择条件本身分为两个字段，之间用一个小数点（.）分隔。前一字段是一项服务，后一字段是一个优先级。选择条件是对消息类型的一种分类，这种分类便于 人们把不同类型的消息发送到不同的地方。在同一个syslog配置行上允许出现一个以上的选择条件，但必须用分号（;）隔开。 
+
+1、常见facility:
+   kern   : 内核信息；
+   user   : 用户进程信息；
+   mail   : 电子邮件相关信息；
+   daemon : 后台进程相关信息；
+   authpriv : 包括特权信息如用户名在内的认证活动；
+   cron : 计划任务信息；
+   syslog : 系统日志信息
+   lpr : 打印服务相关信息。
+   news : 新闻组服务器信息
+   uucp                uucp 生成的信息
+   local0----local7 : 本地用户信息
+
+2、重要级：重要级是选择条件的第二个字段，它代表消息的紧急程度。
+   按严重程度由低到高排序，优先级是从高到底排序的:
+   debug : 不包含函数条件或问题的其他信息
+   info : 提供信息的消息
+   none : 没有重要级，通常用于排错
+   notice : 具有重要性的普通条件
+   warning : 预警信息
+   err : 阻止工具或某些子系统部分功能实现的错误条件
+   crit : 阻止某些工具或子系统功能实现的错误条件
+   alert : 需要立即被修改的条件
+   emerg : 该系统不可用
+
+   注意: 不同的服务类型有不同的优先级，数值较大的优先级涵盖数值较小的优先级。
+        如果某个选择条件只给出了一个优先级而没有使用任何优先级限定符，对应于这个优先级的消息以及所有更紧急的消息类型都将包括在内。
+        比如说，如果某个选择条件里的优先级是“warning”，它实际上将把“warning”、 “err”、“crit”、“alert”和“emerg”都包括在内。
+
+3、操作动作 : 日志信息可以分别记录到多个文件里，还可以发送到命名管道、其他程序甚至另一台机器。
+   syslog 主要支持以下活动:
+   file : 指定文件的绝对路径
+   terminal 或 prin : 完全的串行或并行设备标志符
+   @host（@IP地址） : 远程的日志服务器
+
+三、 搭建Linux日志服务器:
+   1、编辑/etc/sysconfig/syslog文件,让服务器能够接受客户端传来的数据：
+   在“SYSLOGD_OPTIONS”行上加“-r”选项以允许接受外来日志消息。
+   -----------------------------------------------------------------
+   [root@client ~]# vim /etc/sysconfig/syslog
+   # Options to syslogd
+   # -m 0 disables 'MARK' messages.
+   # -r enables logging from remote machines
+   # -x disables DNS lookups on messages recieved with -r
+   # See syslogd(8) for more details
+   SYSLOGD_OPTIONS="-r -m 0"
+   # Options to klogd
+   # -2 prints all kernel oops messages twice; once for klogd to decode, and
+   #    once for processing with 'ksymoops'
+   # -x disables all klogd processing of oops messages entirely
+   # See klogd(8) for more details
+   KLOGD_OPTIONS="-x"
+   #
+   SYSLOG_UMASK=077
+   # set this to a umask value to use for all log files as in umask(1).
+   # By default, all permissions are removed for "group" and "other".
+   -----------------------------------------------------------------
+   
+   2、重新启动syslog守护进程。 
+   -----------------------------------------------------------------
+   [root@client ~]# service syslog restart
+   关闭内核日志记录器：                                       [确定]
+   关闭系统日志记录器：                                       [确定]
+   启动系统日志记录器：                                       [确定]
+   启动内核日志记录器：                                       [确定]
+   [root@client ~]#
+   -----------------------------------------------------------------
+   
+   3、关闭iptables，也可以开启514端口。本例中我们关闭iptables。
+
+四、配置各客户端：
+   1、配置/etc/syslog.conf
+   
+   修改客户机/etc/syslog.conf文件，在有关配置行的操作动作部分用一个“@”字符指向日志服务器
+   -----------------------------------------------------------------
+   [root@client ~]# vim /etc/syslog.conf
+   # Log all kernel messages to the console.
+   # Logging much else clutters up the screen.
+   #kern.*                                                 /dev/console
+   *.*                                                     @10.64.165.210
+   # The authpriv file has restricted access.
+   authpriv.*                                              /var/log/secure
+   ……下面省略
+   -----------------------------------------------------------------
+   
+   另外如果配置了DNS域名的话可以使用域名。
+             2、重启客户端syslog使设置生效。
+   检测成果：
+           下图是我们在客户端重启iptables服务后在服务端看到的日志情况：
+   -----------------------------------------------------------------
+   [root@client ~]# cat /var/log/messages |tail
+   Nov 30 16:44:29 10.64.165.200 kernel: klogd 1.4.1, log source = /proc/kmsg started.
+   Nov 30 16:44:33 10.64.165.200 kernel: Removing netfilter NETLINK layer.
+   Nov 30 16:44:33 10.64.165.200 kernel: ip_tables: (C) 2000-2006 Netfilter Core Team
+   Nov 30 16:44:33 10.64.165.200 kernel: Netfilter messages via NETLINK v0.30.
+   Nov 30 16:44:33 10.64.165.200 kernel: ip_conntrack version 2.4 (4096 buckets, 32768 max) - 228 bytes per conntrack
+   -----------------------------------------------------------------
+
+
+
+
+
