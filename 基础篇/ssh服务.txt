@@ -1,0 +1,85 @@
+telnet : 远程登录协议
+   C/S 架构
+   C : 客户端
+   S : 服务端
+   
+ssh : secure Shell 协议
+      通讯过程及认证过程是加密的，主机认证
+      用户认证过程加密
+      数据传输过程加密
+      
+ssh 有v1和v2两个版本
+   v1版本目前无法避免man-in-middle（中间人） 的攻击，所以v1版本是不安全的
+   
+
+认证过程:
+   1、基于口令认证
+   2、基于密钥认证
+   
+协议: 规范
+实现: 服务器端、客户端
+
+
+Linux: openSSH
+   C/S:
+      服务器端: sshd , 配置文件:/etc/ssh/sshd_config
+      客户端: 
+            ssh 配置文件: /etc/ssh/ssh_config
+            ssh-keygen : 密钥生成器
+            ssh-copy-id : 将公钥传输至远程服务器
+            scp : 跨主机安全复制工具
+            
+            ssh用法:
+               ssh USERNAME@HOST : 指定以哪个用户的身份来登陆某一台主机
+               ssh -l USERNAME HOST : 也是指定以哪个用户的身份来登陆某一台主机，作用和上面一样
+               ssh USERNAME@HOST "COMMAND" : 不登陆远程主机，但是可以执行远程主机上面的命令
+            
+            scp用法:
+               scp SRC DEST
+                  
+               scp USERNAME@HOST:/PATH/TO/FILE /PATH/TO/LOCAL : 将远程主机的内容复制到本地
+               scp /PATH/TO/LOCAL USERNAME@HOST:/PATH/TO/FILE : 将本地的文件复制到远程主机上
+               
+            ssh-keygen的用法:
+               ssh-keygen 
+                  -t rsa : 生成一对密钥
+                    分别保存在 ~/.ssh/id_rsa（私钥）
+                             ~/.ssh/id_rsa.pub (公钥)
+                  -f /path/to/KEY_FILE : 指定生成的文件名
+                  -P '' : 指定加密私钥的密码
+               
+               《1》有的时候为了免输入密码登陆主机，可以将自己本地的公钥追加保存到需要登陆的远程主机的家目录下的./ssh/authorized_keys文件或者./ssh/authorized_keys2文件中，就可以实现免密码登陆
+                  注意:这里的./ssh 目录的权限一定要是700
+               
+            ssh-copy-id的用法:相当于做了上面《1》的工作
+               ssh-copy-id -i ~/.ssh/id_rsa.pub
+               例如: ssh-copy-id -i ~/.ssh/id_rsa.pub USERNAME@HOST 这样就将本地~/.ssh/id_rsa.pub文件的内容自动追加到对应用户家目录下的./ssh/authorized_keys中.
+
+
+dropbear : 嵌入式系统专用的ssh服务端和客户端工具
+           服务器端 : dropbear
+                    dropbearkey
+           客户端  : dbclient
+           
+           dropbear 默认使用nsswitch实现名称解析
+               /etc/nsswitch.conf
+               /lib/libnss_files*
+               /usr/lib/libnss3.so
+               /usr/lib/libnss_files*
+               
+           dropbear会在用户登录的时候检查其默认shell是否当前系统安全shell:
+               系统的安全shell放在:/etc/shells文件中
+           
+           主机密钥默认位置:
+               /etc/dropbear/
+                  RSA : dropbear_host_key
+                        长度可变，只要是8的整数倍,默认为1024
+                        
+                  DSS : dropbear_dss_host_key
+                        长度固定,默认是1024
+            
+            dropbearkey命令使用方法:
+               dropbearkey
+                     -t rsa|dsa
+                     -f /path/to/KEY_FILE
+                     -s SIZE(长度)

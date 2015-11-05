@@ -1,0 +1,40 @@
+DNS : Domain Name Service
+域名 : www.magedu.com (主机名,FQDN :Full Qualified Domain Name,完全限定域名)
+
+DNS的作用:名称解析 Name Resolving 名称转换（背后有查询过程，数据库）
+
+nsswitch:
+
+stub resolver : 名称解析器
+
+hosts : 
+   IPADDR         FQDN              Aliases
+   172.16.0.1     www.magedu.com    www
+
+
+TLD:Top Level Domain : 顶级域
+   组织域 : .com .net .org .cc
+   国家域 : .cn .tw .hk .iq .jp
+   反向域 : IP --> FQDN
+   
+查询的方式:
+   递归:只发出一次请求
+   迭代:发出多次请求
+   
+解析:
+   正向: FQDN --> IP
+   反向: IP --> FQDN
+
+DNS:
+   1、分布式数据库
+   2、上机仅知道直接下级
+   3、下级仅知道根的位置
+   
+DNS服务器:
+   1、接收本地客户端查询请求(递归)
+   2、外部客户端请求:请求权威答案
+         肯定答案:TTL(缓存时长)
+         否定答案:TTL(缓存时长)
+   3、外部客户端请求:非权威答案
+
+
