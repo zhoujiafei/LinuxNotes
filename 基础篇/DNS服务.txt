@@ -36,5 +36,98 @@ DNS服务器:
          肯定答案:TTL(缓存时长)
          否定答案:TTL(缓存时长)
    3、外部客户端请求:非权威答案
+   
+DNS服务器常见的类型:
+   主DNS服务器 : 数据修改
+   辅助DNS服务器 : 请求数据同步
+      serial number : 序列号
+      refresh : 刷新时间
+      retry : 重试时间
+      expire : 工期时间 
+      nagative answer TTL : 否定答案的缓存时长
+   缓存DNS服务器:
+   转发器:
+   
+数据库中的，每一个条目称作一个资源记录(Resource Record,RR)
+   资源记录的格式:
+   NAME                 [TTL](可以省略)         IN          RRT(资源记录类型)          VALUE
+   www.mageedu.com.                           IN               A                  1.1.1.1                 ===> 正向解析
+   
+   1.1.1.1                                    IN               PTR                www.mageedu.com.        ===> 反向解析
+   
+
+资源记录类型:
+   SOA(Start Of Authority [起始授权记录]) : 用于标明一个区域内部，主从DNS服务器之间如何同步数据，以及起始授权对象是谁.
+      格式:
+         ZONE-NAME    TTL    IN    SOA    FQDN     ADMINISTRATOR_MAILBOX (
+                                                         serial-number
+                                                         refresh
+                                                         retry
+                                                         expire
+                                                         nagative-answer-TTL
+                                                   )
+      时间单位 : M(分钟) 、H(小时) 、D(天) 、 W(周)，默认单位是秒
+      邮箱格式 : admin@magedu.com 要写成 -->   admin.magedu.com 因为@符号有特殊意义，表示区域
+   
+      例如:
+         magedu.com.      600     IN     SOA     FQDN     admin.magedu.com (
+                                                         2015111101 (版本号最长不超过10位)
+                                                         1H
+                                                         5M
+                                                         1W
+                                                         1D)
+      或者也可以写成一行的形式:
+         magedu.com.      600     IN     SOA     FQDN     admin.magedu.com 2015111101 (版本号最长不超过10位) 1H 5M 1W 1D
+   
+   NS(Name Server) : ZONE NAME (区域名称) --> FQDN
+      例如: 一般是成对出现
+         magedu.com.      600   IN    NS   ns.magedu.com.
+         ns.magedu.com.   600   IN    A     1.1.1.2
+   
+   MX(Mail eXchanger) : ZONE NAME --> FQDN
+      格式:  ZONE-NAME             TTL   IN   MX   pri(优先级)  VALUE
+            magedu.com.           600   IN   MX    10         mail.magedu.com.
+            mail.magedu.com.      600   IN    A               1.1.1.3
+      优先级:0-99，数字越小级别越高
+   
+   A(address) : FQDN --> IPv4
+   
+   AAAA: FQDN --> IPv6
+   
+   PTR (pointer) : IP --> FQDN
+   CNAME(Canonical NAME [正式名称或者叫别名名称]): FQDN --> FQDN
+      例如:
+         www2.magedu.com.        IN       CNAME       www.magedu.com.
+   TXT:
+   CHAOS:
+   SRV:
+   
+
+域: Dmain ，域是逻辑概念
+区域:Zone  ，区域是物理概念
+
+建立两个区域文件:
+   正向区域文件类似这样:
+         magedu.com.          IN    SOA   
+         www.magedu.com. (可以直接简写成www)     IN    A        192.168.0.1
+         
+   反向区域文件类似这样:
+         0.168.192.in-addr.arpa.     IN   SOA
+                  |
+                  |----->  前面一定要是网段地址反过来写
+         
+         1.0.168.192.in-addr.arpa. （可以简写成1）    IN   PTR    www.magedu.com.
+         
+区域传送:从DNS服务器到主DNS服务器请求数据，主DNS服务器将数据传送到从服务器的过程
+
+区域传送的类型:
+   完全区域传送 : axfr
+   增量区域传送 : ixfr
+
+针对传送数据的区域类型:
+   主区域 : master
+   从区域 : slave
+   提示区域: hint （定义根在哪里）
+   转发区域:forward
 
 
