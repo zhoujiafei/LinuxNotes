@@ -131,3 +131,95 @@ DNS服务器常见的类型:
    转发区域:forward
 
 
+
+--------------------------------------------------------------------
+DNS服务器 : BIND (Berkeley Internet Name Domain)
+
+bind97:
+   /etc/named.conf : 主配置文件
+      BIND进程的工作属性
+      区域的定义
+
+   /etc/rndc.key : 让rndc工作的密钥文件
+      rndc : remote name domain controller
+      配置信息:/etc/rndc.conf
+   
+   /var/named/下面的文件
+      区域数据文件
+      
+   /etc/rc.d/init.d/named:
+      {start|stop|restart|reload|status}
+      
+   二进制程序:named
+
+bind-chroot:
+   
+dig : Domain Information Gropher
+   dig -t RT NAME : 表示查NAME有没有对应的类型的记录
+      例如: dig -t NS magedu.com. :表示检查magedu.com. 这个区域有没有NS记录
+   dig -x IP : 表示根据IP查FQDN
+
+host -t RT NAME : 查询名称的解析结果
+
+nslookup : 交互式命令
+nslookup> 
+         server IP
+         set q=RT
+         NAME
+
+DNS监听的协议以及端口:
+   53/udp
+   53/tcp
+   
+   953/tcp 这个是rndc 监听的
+   
+SOCKET : 套接字
+   IP:PORT
+   
+区域的定义:
+   zone "ZONE-NAME" IN {
+      type {master|slave|hint|forward};
+   }
+   
+主区域:
+   file "区域数据文件";
+
+从区域:
+   file "区域数据文件";
+   masters { master1_ip; };
+
+
+关闭SELinux:
+   临时关闭SELinux:
+   # gentenforce
+   Enforcing
+   
+   # setenforce 0 关闭
+   # setenforce 1 启动
+   
+   永久关闭:
+   修改:/etc/selinux/config
+
+
+rndc:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

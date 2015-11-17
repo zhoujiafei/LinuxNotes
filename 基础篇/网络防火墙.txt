@@ -1,3 +1,94 @@
 Linux:网络防火墙
-   netfiletr:
-   iptables:
+   netfiletr: frame
+   iptables: 数据报文过滤、NAT、mangle等规则生成的工具
+   
+网络:IP报文首部、TCP报文首部
+
+防火墙：硬件、软件：规则（匹配标准,处理办法）
+
+Framework:
+   默认规则:
+      开放:堵
+      封闭:通
+      
+规则：
+   匹配标准:
+      IP:源IP,目标IP
+      TCP:SPORT,DPORT    SYN=1,ACK=0,RCT=0,FIN=0; SYN=1,ACK=1,RCT=0,FIN=0;SYN=0,ACK=1,RCT=0,FIN=0;(ESTABLISHED)
+      UDP:SPORT,DPORT
+      ICMP:icmp-type
+
+数据报文过滤:
+   Linux2.0
+      ipfw/firewall
+      
+   Linux2.2
+      ipchain/firewall
+   
+   Linux2.4
+      iptables/netfilter
+      
+hook function : 钩子函数:
+   prerouting: 在路由之前
+   input : 到达本机的位置
+   output : 出本机的位置
+   forward : 转发的位置
+   postrouting : 在路由之后
+   
+   规则链:
+      PREROUTING
+      INPUT
+      OUTPUT
+      FORWARD
+      POSTROUTING
+      
+filetr(过滤) : 表
+   INPUT
+   OUTPUT
+   FORWARD
+
+nat(地址转换) : 表
+   PREROUTING
+   OUTPUT
+   POSTROUTING
+   
+mangle(修改报文首部  拆开、修改、封装) : 表
+   PREROUTING
+   INPUT
+   OUTPUT
+   FORWARD
+   POSTROUTING
+
+raw (原始的) : 表
+   PREROUTING
+   OUTPUT
+
+iptables:
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+
