@@ -64,16 +64,128 @@ raw (原始的) : 表
    OUTPUT
 
 iptables:
+
+能否使用自定义链？
+   可以使用自定义链，但只在被调用的时候才发挥作用，而且如果没有自定义链中的任何规则匹配，还应该有返回机制
+   
+   用户可以删除自定义的空链
+   但是默认链无法被删除
+   
+每个规则都有两个内置的计数器
+   1、被匹配到的报文个数
+   2、被匹配到的报文大小之和
+   
+规则：匹配标准；处理动作
+
+iptables [-t TABLE] COMMAND CHAIN [num] 匹配标准 -j 处理办法
+注意：[-t TABLE]不写默认是filter表
+
+匹配标准:
+   通用匹配
+      -s,--src : 指定源地址
+      -d,--dst : 指定目标地址
+      -p : 指定协议 {tcp|udp|icmp}
+      -i INTERFACE : 指定数据报文流入的接口
+            PREROUTING,INPUT,FORWARD
+      -o INTERFACE : 指定数据报文流出的接口
+            OUTPUT,POSTROUTING,FORWARD
+   扩展匹配
+      隐含扩展:不用特别指明由哪个模块进行扩展，因此此时使用
+               -p tcp
+                  --sport PORT[-PORT] : 源端口
+                  --dport PORT[-PORT] : 目标端口
+                  --tcp-flags mask comp : 只检查mask指定的标志位，是逗号分隔的标志位列表;comp : 此列表中出现的标志位必须为1，comp中没有出现，而mask中出现的，必须为0
+                        例如:--tcp-flags SYN,FIN,ACK,RST SYN <==> --syn
+                  --syn : 匹配tcp三次握手中的第一次
+               
+               -p icmp
+                  --icmp-type
+                     0:echo-reply 响应报文
+                     8:echo-request 请求报文
+                  例如：本机ip：192.168.1.124 ，设置可以通过本机ping命令
+                     iptables -A OUTPUT -s 192.168.1.124 -p icmp --icmp-type 8 -j ACCEPT
+                     iptables -A INPUT -d 192.168.1.124 -p icmp --icmp-type 0 -j ACCEPT
+               
+               -p udp
+                  --sport
+                  --dport                  
+      显示扩展:必须指明由哪个模块进行的扩展,在iptables中使用-m选项可完成此功能（使用额外的匹配机制）
+               -m EXTESION --spe-opt
+               
+               state : 状态扩展
+                     结合ip_conntrack追踪会话的状态
+                     NEW : 新连接请求
+                     ESTABLISHED : 已建立的连接
+                     INVALID : 非法连接
+                     RELATED : 相关联的（专为FTP服务的状态）
+                  例如:-m state --state NEW,ESTABLISHED -j ACCEPT
+               
+               multiport : 离散的多端口匹配扩展
+                     --source-ports
+                     --destination-ports
+                     --ports
+                     
+                  例如:-m multiport --destination-ports 22,80 -j ACCEPT
+                  
+                  注意:条件取反使用 ! : 例如 -s ! 192.168.1.124 : 表示除了192.168.1.124之外的IP
+               
+保存规则:
+   1、使用 service iptables save 命令默认将规则保存在/etc/sysconfig/iptables 文件中
+   2、使用 iptables-save > SAVE_FILE 可以自定义保存位置:
+   
+   但是在使用service iptables restart 默认转载的是/etc/sysconfig/iptables文件
+   如果想要手动装载自定义的文件可以使用: iptables-restore < SAVED_FILE        
+   
+命令:
+   管理规则:
+      -A : 附加一条规则，添加在链的尾部
+      -I CHAIN [num] : 插入一条规则，插入为对应CHAIN的第num条，如果省略num则插入第一条
+      -D CHAIN [num] : 删除指定链中的第num条规则
+      -R CHAIN [num] : 替换指定的规则
+   管理链:
+      -F [CHAIN] : flush,清空指定规则链,如果省略CHAIN,则可以删除对应表中的所有规则链
+      -P CHAIN : 设定指定链的默认策略
+      -N : 自定义一个新的空链 
+      -X : 删除一个自定义空链
+      -Z : 置零指定链中所有规则的计数器
+      -E : 重命名自定义的链
+   查看:
+      -L : 显示指定表中的所有规则
+            -n : 以数字的格式显示主机地址和端口号 例如: iptables -L -n
+            -v : 显示详细信息： 例如: iptables -L -n -v
+            -x : 显示精确值：   例如: iptables -L -n -v -x
+            --line--numbers : 显示规则号码
+
+动作(TARGET):
+   -j TARGET:
+      ACCEPT:允许，接受
+      DROP:拒绝，丢弃
+      REJECT:拒绝
+      DNAT: 目标地址转换
+      SNAT: 源地址转换
+      REDIRECT:端口重定向
+      MASQUERADE:做地址伪装
+      LOG:记录日志
+      MARK:设定标记
+      
+   
+
+注意：iptables不是服务，但是有服务脚本；服务脚本的主要作用在于管理保存的规则
+         装载或者移除iptables/netfilter相关的内核模块
+         iptables_nat,iptables_filter,iptables_mangle,iptables_raw,ip_nat,ip_contrack  
    
    
+例如：允许192.168.0.0/16 这个网段的主机访问172.168.100.7这台主机的sshd服务
+iptables -A INPUT -s 192.168.0.0/16 -d 172.168.100.7 -p tcp --dport 22 -j ACCEPT    设置进的
+iptables -A INPUT -s 172.168.100.7 -d 192.168.0.0/16 -p tcp --sport 22 -j ACCEPT    设置出的
+
+注意:ping 命令是采用icmp协议
+
+
    
    
-   
-   
-   
-   
-   
-   
+iptables -A INPUT -d 192.168.1.124 -p tcp --dport 80 -j ACCEPT
+iptables -A OUTPUT -s 192.168.1.124 -p tcp --sport 80 -j ACCEPT
    
    
    
