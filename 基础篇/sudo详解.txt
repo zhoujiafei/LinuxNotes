@@ -1,0 +1,51 @@
+sudo:某个用户能够以另外哪一个用户的身份通过哪些主机执行什么命令
+   sudo COMMAND 
+   
+
+sudo的配置文件:
+   /etc/sudoers
+   可以使用visudo 打开编辑
+   
+在/etc/sudoers里:
+一个sudo条目:
+who     which_host=(runas) [TAG:] command
+                              |
+                              |-------> 例如：如果加了标签NOPASSWD:执行后面的命令就不用再输入密码了
+who : 可以使用User_Alias
+which_host : 可以使用Host_Alias
+runas: 可以使用Runas_Alias
+command: 可以使用Cmnd_Alias
+
+注意:别名必须全部而且只能使用英文大写
+
+User_Alias:
+   用户的用户名
+   组名,使用%引导
+   还可以包含其他已经存在的用户名
+
+Host_Alias:
+   主机名
+   IP
+   网络地址
+   其他主机别名
+   
+Runas_Alias:
+   用户名
+   %组名
+   其他的Runas别名
+   
+Cmnd_Alias:
+   命令路径
+   目录（表示此目录内的所有命令）
+   其他事先定义的命令别名
+   
+
+sudo 命令
+   -l : 列出当前用户可以使用的所有sudo类命令
+   -k : 让认证信息失效
+   
+
+使用sudo操作的日志都记录在/var/log/secure 文件中
+
+
+   
