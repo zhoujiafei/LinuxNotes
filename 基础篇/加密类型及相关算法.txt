@@ -76,12 +76,92 @@ openssl 实现私有CA
       openssl genrsa -out /PATH/TO/KEYFILENAME NUMBITS
    2、生成自签署证书
    
+1、创建CA
+   自己生成一对密钥
+   生成自签证书
+
+2、客户端
+   生成一对密钥
+   生成证书颁发请求.csr
+   将请求发给CA
+   
+3、CA端
+   签署此证书
+   传送给客户端
+
+-------------------------------------------------------------
+
+OpenSSH:
+   telnet ,TCP/23  远程登录
+      认证明文
+      数据传输明文
+   
+   ssh :Secure SHell ,TCP/22
+   
+netstat :
+   -t : tcp connections
+   -u : udp connections
+   -n : 数字方式显示
+   -l : Listening
+   -p : process 进程
+   
+
+ssh 的配置文件是 /etc/ssh/ssh_config  
+sshd 的配置文件是 /etc/ssh/sshd_config
+
+
+ssh :
+   ssh -l USERNAME REMOTE_HOST ['COMMAND']
+   ssh USERNAME@REMOTE_HOST
+   
+   -X:
+   -Y:
+   -p PORT
+   
+基于密钥认证:
+
+一台主机为客户端（基于某个用户实现）
+1、生成一对密钥
+ssh-keygen
+   -t {rsa|dsa}
+   -f /path/to/keyfile
+   -N 'passwd'
+   
+2、将公钥传输至服务器端某用户的家目录下的.ssh/authorized_keys文件中
+使用文件传输工具传输（ssh-copy-id,scp）
+ssh-copy-id -i /path/to/publey USERNAME@REMOTE_HOST
+
+3、测试登录
 
 
 
+scp : 基于ssh的远程复制命令，可以实现在主机之间传输数据
+scp [option] SRC DEST
+   -r
+   -p
+   -a
+
+REMOTE_MACHINE
+   USERNAME@HOSTNAME:/path/to/somefile  
 
 
+sftp:
+   sftp USERNAME@REMOTE_HOST
+   
 
+-------------------------------------------------------------
+
+总结:
+1、密码应该经常换且足够复杂
+2、使用非默认端口
+3、限制登录客户地址
+4、禁止管理员直接登录
+5、仅允许有限制用户登录
+6、使用基于密钥的认证
+7、禁止使用版本1
+
+
+嵌入式系统专用的ssh软件 dropbear
 
 
 
