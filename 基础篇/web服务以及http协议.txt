@@ -1,0 +1,71 @@
+HTTP: HyperText Transfer Protocol 超文本传输协议
+
+超链接
+
+web : 
+   http/0.9 : 仅纯文本（超链接），ASCII
+   HTML : HyperText Mark Language
+   
+Browser : 客户端
+
+URI : Uniform Resource Identifier 统一资源标识符(全局范围内去标记唯一的定位一种资源访问路径的方式或者命名方式)
+      统一: 路径格式上的统一
+
+URL : Uniform Resource Locator : 统一资源定位符(是URI的子对象)
+
+protocol://HOST:PORT/PATH/TO/SOME_FILE
+
+web资源:
+   多个资源很可能被整合成一个HTML文档
+
+web对象与web资源是同一个概念
+
+
+资源获取方法(http方法):
+   GET :
+
+HTTP/1.0 : PUT ,DELETE ,POST，HEAD
+
+MIME : Multipurpose Internet Mail Extension : 多用途互联网邮件扩展
+
+SMTP : Simple Mail Transmision Protocol : 简单邮件传输协议
+
+动态网页:服务器端存储的文档是非HTML格式,而是编程语言开发的脚本，脚本接受参数之后在服务器执行一次，运行完成之后会生成HTML格式的文档，把生成的文档发给客户端
+
+例如:
+web --> protocol --> php --> index.php
+
+
+缓存:
+
+
+HTTP报文: 请求报文，响应报文
+   
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
