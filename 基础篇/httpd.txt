@@ -1,0 +1,90 @@
+httpd
+   web server ,Open Source
+   2.2 ,2.4.2.0
+   
+httpd的特性:
+   1、事先创建进程
+   2、按需维持适当的进程
+   3、模块化设计，核心比较小，各种功能都通过模块添加(包括PHP)
+         支持运行时配置，支持单独模块
+   4、支持多种方式的虚拟主机的配置
+         Socket IP:PORT
+         虚拟主机:
+            (1)基于IP的虚拟主机
+            (2)基于端口的虚拟主机
+            (3)基于域名的虚拟主机
+   5、支持https协议（mod_ssl）
+   6、支持用户认证
+   7、支持基于IP或主机名的ACL
+   8、支持每目录的访问控制
+   9、支持URL重写
+   
+   
+安装方式:
+RedHat:
+   1、rpm包
+   2、源码编译
+   
+httpd:SELinux (事先让其处于permssive,disabled)
+
+httpd:
+   /usr/sbin/httpd(MPM:prefork)
+         httpd root root (master process)
+         httpd apache apache (worker process)
+   /etc/rc.d/init.d/httpd : 服务脚本
+   Port : (80/tcp)  (ssl:443/tcp)
+   /etc/httpd:工作根目录，相当于程序安装目录
+   /etc/httpd/conf : 配置文件目录
+         主配置文件:httpd.conf
+         /etc/httpd/conf.d/*.conf
+   /etc/httpd/modules : 模块目录（实际是一个链接）--> /usr/lib/httpd/modules
+   /etc/httpd/logs --> /var/log/httpd : 日志目录
+         日志文件有两类: 访问日志（access.log）错误日志（error.log）
+   /var/www/
+      html : 一般存放静态文件
+      error: 存放错误页面
+      cgi-bin : 一般存放动态文件
+      
+      
+      cgi: Common Gateway Interface (是外部应用程序（CGI程序）与Web服务器之间的接口标准)
+            Client --> httpd (index.cgi) --> Spawn Process (index.cgi) --> Client
+            perl ,python, java (Servlet,JSP) , php
+            
+      fastcgi:
+      
+----------------------------------------------------------------------------------
+httpd.conf配置:
+   directive(指令不区分大小写) value(根据需要有可能区分大小写)
+   
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+   
+      
+      

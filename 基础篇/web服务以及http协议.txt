@@ -40,32 +40,49 @@ web --> protocol --> php --> index.php
 
 
 HTTP报文: 请求报文，响应报文
+
+请求报文语法:
+<method> <request-URL> <version>
+<headers>
+
+<entity-body>
+
+响应报文语法:
+<version> <status> <reason-phrase>
+<headers>
+
+<entity-body>
+
+状态代码:
+1xx : 纯信息
+2xx : "成功类"信息 (200,201,202)
+3xx : 重定向类的信息 (301,302,304)
+4xx : 客户端错误类信息(404)
+5xx : 服务端错误类信息
+
+例如:
+   请求报文:
+   GET / HTTP/1.1
+   Host: www.zhoujiafei.com
+   Connection:keep-alive
    
+   响应报文
+   HTTP/1.1 200 OK
+   x-Powered-By: PHP/5.5.12
+   Vary:Accept-Encoding,Cookie,User-Agent
+   Cache-Control:private
+   Content-Encoding:gzip
+   Content-Length:6931
    
+   注意：上面两个报文的第一行通常称作报文"起始行(start line)"，后面标签格式的内容称作首部域(header field),每个首部域都由名称(name)和值(value)组成,中间用逗号分隔.
+        另外响应报文通常还有一个称作Body的信息主体，即响应给客户端的内容
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+web服务器的主要操作:
+   1、建立连接--接收或者拒绝客户端连接请求
+   2、接收请求--通过网络读取HTTP请求报文
+   3、处理请求--解析请求报文并且做出相应的动作
+   4、访问资源--访问请求报文中的相关资源
+   5、构建响应--使用正确的首部生成HTTP响应报文
+   6、发送响应--向客户端发送响应报文
+   7、记录日志--将已经完成的HTTP事务记录进日志文件
 
