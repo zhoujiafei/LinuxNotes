@@ -55,13 +55,141 @@ httpd:
 ----------------------------------------------------------------------------------
 httpd.conf配置:
    directive(指令不区分大小写) value(根据需要有可能区分大小写)
+       
+
+MPM:Multi Path Modules (多道处理模块)
+   mpm_winnt : 
+   prefork : 预先生成进程模式,一个请求用一个进程来响应
+   worker : 基于线程工作，一个进程处理多个用户请求，但是这个进程会生成多个线程，这每一个线程来响应用户的每一个请求
+   event : 基于事件的驱动，一个进程直接处理多个请求
+
+URL路径和文件系统路径不是一码事，URL是相对于DocumentRoot的路径而言的
+
+配置文件中:
+Options
+   None : 不支持任何选项
+   Indexes: 允许索引目录
+   FollowSymLinks : 允许访问符号链接指向的源文件
+   Include : 允许执行服务端包含（SSI）
+   ExecCGI : 允许执行CGI脚本
+   All : 支持所有选项
    
+AllowOverride : [All|None|FileInfo|AuthConfig|Limit]
+   例如:AuthConfig可以控制认证访问
+      【基于用户的】
+      AllowOverride AuthConfig
+      AuthType Basic : 认证类型Basic
+      AuthName "Restricted Files" : 认证名称
+      AuthUserFile /usr/local/apache/passwd/passwords : 认证保存的账号和密码文件
+      Require user zhoujiafei : 允许哪些用户认证访问 valid-user 表示所有人
       
+      【基于组的】
+      AllowOverride AuthConfig
+      AuthType Basic : 认证类型Basic
+      AuthName "Restricted Files" : 认证名称
+      AuthBasicProvider file
+      AuthUserFile /usr/local/apache/passwd/passwords
+      AuthGroupFile /usr/local/apache/passwd/groups
+      Require group GROUP_NAME
+
+Order:用于定义基于主机的访问控制功能，IP，网络地址或者主机定义访问控制机制
+   Order allow,deny（放在最户的是表示默认的）
+   allow fron ...
+   deny from ...（地址）
+   
+   注意:在httpd 2.4的版本中不在使用allow和deny这种机制
+   
+地址的表示方式:
+   IP
+   network/netmask
+   HOSTNAME : 例如 www.a.com
+   DOMAINNAME : 例如 a.com
+   Partial IP : 例如:172.16 ,  172.16.0.0./16
+   
+   
+总结配置文件主要有以下的配置:
+   定义网站文档目录
+   访问选项:options
+   基于主机的访问控制
+   基于用户或组的访问控制
+   用户个人站点
+   错误日志
+   日志格式
+   访问日志 PV UV
+   路径别名
+
+注：httpd -t 可以检查配置文件语法，所以在编辑完httpd.conf文件之后可以用此命令检查一下
+
+----------------------------------------------------------------------------------
+
+elinks : 在纯文本环境下浏览网页的工具
+   例如：elinks http://www.baidu.com
+   -dump : 打印出网页立即退出
+   -source : 显示网页的源代码
+   
+----------------------------------------------------------------------------------
+
+htpasswd : 用于管理用户基于basic认证的密码文件
+   -c : 创建密码文件
+   -m : 以md5方式加密密码
+   
+----------------------------------------------------------------------------------
+
+PV : Page View 每天的页面访问量
+UV : User View 每天的独立IP访问量
+
+----------------------------------------------------------------------------------
+apache的虚拟主机:
+   apache : 服务器，Host，物理主机
+   
+   apache服务:
+      服务于多个不同的站点
+   
+   apache :
+      中心主机
+      虚拟主机
+   注意:如果使用了虚拟主机必须先取消中心主机（注释中心主机的DocumentRoot即可）    
+
+虚拟主机的定义:
+   <VirtualHost HOST>
+      ServerName:（主机名）
+      ServerAlias:主机别名
+      DocumentRoot:(网站根目录)
+      <Directory "/www/xxx">
+         Option
+         AllowOverride
+         ...
+      </Directory>
+      Alias
+      ErrorLog
+      CustomLog
+      <Location "/xxx">
+      </Location>
+      ScriptAlias : 允许执行的CGI脚本
+   </VirtualHost>
+
+基于IP的HOST的写法:
+   HOST
+      IP1:80
+      IP2:80
       
+基于端口的HOST的写法:
+   HOST
+      IP:80
+      IP:8080
+      ...
+   注意:使用基于端口的时候，需要在配置文件里面增加Listen PORT 来监听对应的端口
       
-      
-      
-      
+基于域名的HOST的写法:
+      IP:80
+      *:80 (每个IP都监听)
+   ServerName要不同
+   
+   注意：首先要配置NameVirtualHost定义在哪个IP:PORT上面使用基于域名的虚拟主机
+   
+   
+   
+   
       
       
       
