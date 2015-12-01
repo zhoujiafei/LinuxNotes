@@ -156,7 +156,7 @@ apache的虚拟主机:
       ServerAlias:主机别名
       DocumentRoot:(网站根目录)
       <Directory "/www/xxx">
-         Option
+         Options
          AllowOverride
          ...
       </Directory>
@@ -187,9 +187,15 @@ apache的虚拟主机:
    
    注意：首先要配置NameVirtualHost定义在哪个IP:PORT上面使用基于域名的虚拟主机
    
-   
-   
-   
+设定默认虚拟主机的写法:
+   <VirtualHost _default_:80>
+      DocumentRoot /www/xxx
+   </VirtualHost>
+   或者
+   <VirtualHost _default_:*>
+      DocumentRoot /www/xxx
+   </VirtualHost>
+   必须放在其他基于域名虚拟主机的最上头
       
       
       
