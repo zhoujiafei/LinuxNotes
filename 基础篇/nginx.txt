@@ -1,0 +1,45 @@
+nginx的作用:
+   (1)web服务器
+   (2)轻量级的反向代理
+            web
+            mail
+   (3)模块化设计
+   
+
+缓存：
+varnish,squid
+nginx:cache(disk)
+httpd:cache(disk,memery)
+
+nginx的热部署:平滑升级
+
+----------------------------------------------------------------
+nginx配置的大体结构:
+user
+group
+worker
+http {
+   server {
+      location {
+      
+      }
+   }
+}
+
+mail {
+
+
+}
+nginx中
+   server {} : 定义一个虚拟主机
+   location {} :
+   
+   
+location [ = | ~ | ~* | ^~ ] uri {}
+
+location URI {} : 对当前路径及子路径下的所有对象都生效
+location = URI {} : 精确匹配指定的路径，不包括子路径，因此，只对当前资源生效
+location ~ URI {} : 模式匹配URI,此处的URI可已使用正则表达式，区分大小写
+location ~* URI {} : 模式匹配URI,此处的URI可已使用正则表达式，不区分大小写
+location ^~ URI {} : 不适用正则表达式
+

@@ -1,0 +1,24 @@
+Cluster:
+(1)LB:负载均衡集群(侧重点是并发能力)
+(2)HA:High Avilibility 高可用集群（侧重点主机在线健康状况）
+                     高可用性评价标准(在线时间/(在线时间+故障处理时间))
+                     
+(3)HP(HPC) 高性能集群 High Performance 也叫科学计算集群
+      <1>向量机
+      <2>并行处理集群
+            分布式文件系统
+            将大任务切割成小任务，分别进行处理的机制
+            
+            
+            
+            
+            
+            
+            
+            
+
+rsync+inotify
+ 
+DAS : Directory Attached Storage 直接附加存储
+NAS : Network Attached Storage 网络附加存储
+
