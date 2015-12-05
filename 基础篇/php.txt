@@ -1,0 +1,60 @@
+PHP : PHP is Hypertext Preprocessor 
+   超文本预处理器
+   
+opcode : 操作码
+php source code --> php解释器将其编译成二进制 --> 执行二进制格式
+zend引擎编译源码的结果就叫opcode(接近于二进制格式，但是不能够独立运行，需要依赖于zend引擎)
+
+一、Zend Engine的出现将PHP代码的处理过程分成两个过程:
+   (1)首先是分析PHP代码并且将其转换为称作zend opcode的二进制格式（类似Java的字节码），并将其存储于内存中。
+   (2)然后Zend Engine去执行这些转化后的Opcode
+   
+二、PHP的Opcode
+   Opcode是一种PHP脚本编译后的中间语言，就像JAVA的ByteCode，或者.net的MSL，PHP执行脚本代码一般会经过如下4个步骤（确切地说应该是PHP的语言引擎Zend）
+   (1)Scanning(Lexing) --- 将PHP代码转换为语言片段(Tokens)
+   (2)Parsing --- 将Tokens转换成简单而有意义的表达式
+   (3)Compilation --- 将表达式编译成Opcodes
+   (4)Execution --- 顺次执行Opcodes，每次一条，从而实现PHP脚本功能
+   
+三、php的加速器
+   基于PHP的特殊扩展机制如opcode缓存扩展也可以将opcode缓存于PHP的共享内存中，从而可以让同一段代码的后续重复执行时跳过编译阶段以便提高性能。由此可以看出
+   这些加速器并非真正提高了opcode的运行速度，而仅是通过分析opcode后并将它们重新排列以达到快速执行的目的。
+   
+   常见的php加速器有:
+   (1)APC(Alternative PHP Cache)
+      遵循PHP License的开源框架,PHP Opcode缓存加速器，项目地址:http://pecl.php.net/package/APC
+   
+   (2)eAccelerater
+      源于Turck MMCache，早期的版本包含了一个PHP encoder和PHP loader，目前encoder已经不再支持，项目地址:eaccelerater.net
+      
+   (3)XCache
+      快速而且稳定的PHP Opcode缓存，经过严格测试且被大量用于生产环境，项目地址:http://xcache.lighttpd.net
+      
+   (4)Zend Optimizer和Zend Guard Loader
+      Zend Optimizer并非一个opcode加速器，它是由Zend Technologies为PHP5.2及以前的版本提供的一个免费的，闭源的PHP扩展，其能够运行有Zend Guard
+      生成的加密PHP代码或模糊代码。而Zend Guard Loader是专为PHP5.3提供的类似于Zend Optimizer功能的扩展。
+      
+   (5)NuSphere PhpExpress
+      NuSphere是一款开源的PHP加速器，它支持装载通过NuSphere PHP Encoder编码的PHP程序文件，并且能够实现对常规PHP文件执行加速，项目地址:
+      http://www.nusphere.com/products/phpexpress.htm
+   
+四、PHP源码目录结构
+   
+   PHP的源码在结构上非常清晰，其代码根目录中主要包含了一些说明文件以及设计方案，并且提供了如下子目录:
+   1、build -- 这里主要放置一些跟源码编译相关的文件，比如开始构建之前的buildconf脚本及一些检查环境的脚本等。
+   2、ext -- 官方的扩展目录，包含了绝大多数的PHP的函数的定义和实现，如array系列，PDO系列等等
+   3、main -- 这里存放的就是PHP最为核心的文件了，是实现PHP的基础设施，这里和zend引擎不一样，zend引擎主要实现语言最核心的运行环境
+   4、zend -- zend引擎的实现目录，比如脚本的此法解析，opcode的执行以及扩展机制的实现等等
+   5、pear -- PHP扩展与应用仓库，包含PEAR的核心文件
+   6、sapi -- 包含了各种服务器抽象层的代码，例如apache的mod_php，cgi，fastcgi以及fpm等等的接口
+   7、TSRM -- PHP的现成安全是构建在TSRM库之上的，PHP实现中常见的*G宏通常是对TSRM的封装，TSRM(Thread Safe Resource Manager)线程安全资源管理器
+   8、tests -- PHP的测试脚本集合，包含PHP各项功能的测试文件
+   9、win32 -- 这个目录主要包括Windows平台相关的一些实现，比如socket的实现在Windows下的*Nix平台就不太一样，同时也包含了Windows下编译PHP相关的脚本
+
+apache与PHP结合的三种模式
+(1)CGI
+(2)module模块的方式
+(3)FastCGI(php-fpm)
+
+nginx通常使用FastCGI与PHP相结合使用
+
