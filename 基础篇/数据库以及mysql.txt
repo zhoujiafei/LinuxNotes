@@ -1,0 +1,36 @@
+数据库
+
+数据的组织结构
+   层次型
+   网状型
+   关系型
+
+ODBC : Open DataBase Connection 开放数据互联
+
+DBMS : DataBase Management System 数据库管理系统
+RDBMS : Relational DataBase Management System 关系型数据库管理系统
+   一般具有哪些功能:
+   (1)数据库的创建、删除
+   (2)创建表、删除表、修改表
+   (3)索引的创建、删除
+   (4)用户的权限
+   (5)数据的增删改查
+   
+DML : Data Manapulate Language 数据操作语言
+      例如:INSERT REPLACE UPDATE DELETE
+DDL : Data Defination Language 数据定义语言
+      例如:CREATE ALTER DROP
+DCL : Data Control Language 数据控制语言
+      例如:GRANT REVOKE
+SELECT : 查询语言
+
+RDBMS管理软件有下面几种:
+(1)oracle,Sybase,Infomix,SQL server
+(2)MySql,PostgreSQL,EnterpriseDB,
+
+非关系型数据模型:NoSQL
+   MongoDB , Redis, HBase
+
+
+
+
