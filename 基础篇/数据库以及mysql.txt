@@ -31,6 +31,244 @@ RDBMS管理软件有下面几种:
 非关系型数据模型:NoSQL
    MongoDB , Redis, HBase
 
+DBMS的几大优势:
+   (1)实现数据管理的独立性
+   (2)有效地完成数据的存取
+   (3)数据完整性和安全性
+   (4)数据集中管理
+   (5)并发存储与故障恢复
+   (6)减少应用程序开发时间
+   
+
+MySQL:
+Community Edition 社区版
+Enterprise Edition 企业版
+
+软件包格式:
+   软件包特有的格式
+      rpm格式 .exe格式 等等
+   通用二进制格式
+   源程序
+   
+mysql-server安装之后默认服务目录在:/var/lib/mysql
+   
+客户端:mysql
+服务端:mysql-server
+
+二进制程序
+   mysql是客户端
+      命令:
+         mysql 
+            -u USERNAME : 指明用户（默认root）
+            -p : 指定密码
+            -h MYSQL_SERVER
+            
+      客户端模式:
+         交互式模式:
+            在交互式模式下的命令类别:
+               客户端命令:
+               服务器端命令:
+                  (1)都必须使用语句结束符，默认为分号;
+                  
+                  
+         批处理模式:可以执行mysql脚本
+            
+   mysqld是服务端
+
+mysql服务监听在tcp/3306 ，一般使用mysql用户以及mysql组
+   
+mysql初始化：会创建一个叫mysql的库，这里面管理这mysql自身保存了哪些表，叫什么名字等等信息
+   
+mysql的用户: USERNAME@HOST : 表示允许USERNAME在HOST主机上登录mysql
+                        |----> 客户端主机
+
+
+
+关系型数据库中的对象:
+   库
+   表
+   索引
+   视图
+   约束
+   存储过程
+   存储函数
+   触发器
+   游标
+   用户
+   
+   权限
+   事务
+   
+表：
+   行，列
+   表：实体
+      行：row
+      列：field,column
+
+字段名称
+数据类型:
+      字符:
+         CHAR(n) : 定长字符类型
+         VARCHAR(n) : 可变长度的字符类型
+         BINARY(n) : 区分大小写的字符类型(固定长度)
+         VARBINARY(n) : 区分大小写的字符类型(可变长度)
+         TEXT(n) : 文本格式
+         BLOB(n) : 二进制的大对象(区分大小写)
+      数值:
+         精确数值型:
+               整型:
+                  TYNIINT : (1个字节)
+                  SMALLINT : (2个字节)
+                  MEDIUMINT : (3个字节)
+                  INT : (4个字节)
+                  BIGINT : (8个字节)
+                  
+                  修饰符: UNSIGNED,无符号
+                         NOT NULL 不为空
+                  
+               十进制数值型:
+                  DECIMAL
+         近似浮点型:
+               浮点型:
+                  FLOAT
+                  DOUBLE
+                  
+      日期时间:
+         DATE
+         TIME
+         DATETIME
+         STAMP
+      布尔:0 或者 1
+      内置:
+         ENUM
+      
+      
+类型修饰（类似约束的功能）
+
+
+mysql中常用的命令:
+   DDL:
+      CREATE
+      ALTER
+      DROP
+   DML:
+      INSERT
+      UPDATE
+      DELETE
+   DCL:
+      GRANT
+      REVOKE
+
+创建数据库：
+   CREATE DATABASE db_name;
+   CREATE IF NOT EXISTS db_name;
+
+删除数据库：
+   DROP DATABASE (IF EXISTS) db_name;
+
+创建表：
+   CREATE TABLE table_name (col1,col2,...);
+   
+查看库中的表:
+   SHOW TABLES FROM db_name;
+   
+查看表的结构:
+   DESC table_name;
+   
+查看当前所链接的mysql的端口
+   show variables like 'port';
+   
+删除表:
+   DROP TABLE table_name
+   
+修改表:
+   ALTER TABLE tb_name
+      ADD
+      MODIFY
+      CHANGE
+      DROP
+      
+插入数据:
+   INSERT INTO (COL1,COL2,...) VALUES|VALUE ('STRING',NUMBER,...);
+
+修改数据:
+   UPDATE table_name SET col1=value WHERE ...;
+   
+删除数据:
+   DELETE FROM table_name WHERE ...;
+
+
+--------------------------------------------------------------------------------------
+mysql 为用户设定密码方式:
+1、mysql> SET PASSWORD FOR 'USERNAME'@'HOST'=PASSWORD('password');
+
+2、# mysqladmin -uUSERNAME -hHOST -p password 'password';
+
+3、mysql> UPDATE user SET Password=PASSWROD('password') WHERE USER='root'
+
+新增用户并且授权:
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.%.%' IDENTIFIED BY 'redhat'
+
+--------------------------------------------------------------------------------------
+
+图形化客户端:
+(1)phpMyAdmin
+(2)workbench
+(3)MySQL Front
+(4)Navicat For MySQL
+(5)Toad
+
+--------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
