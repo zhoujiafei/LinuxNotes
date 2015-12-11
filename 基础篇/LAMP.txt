@@ -1,0 +1,114 @@
+LAMP:
+   httpd
+   php
+   php-mysql
+   mysql-server
+
+编译配置LAMP
+   Linux,Apache,MySQL,PHP(Python,Perl)
+
+httpd:
+   apr:Apache Portable Runtime :Apache 可移植运行环境
+   apr-util
+   apr-iconv
+
+安装步骤:
+# yum -y install pcre-devel
+# tar xf apr-1.4.6.tar.bz2
+# ./configure --prefix=/usr/local/apr
+# make 
+# make install
+# tar xf httpd-2.4.4.tar.bz2
+# cd httpd-2.4.4
+# ./configure --prefix=/usr/local/apache --sysconfdir=/etc/httpd --enable-so --enable-rewrite --enable-ssl --enable-cgi --enale-cgid --enable-modules=most 
+   --enable-mods-shared=most --enable-mpms-shared=all --with-apr=/usr/local/apr --with-apr-util=/usr/local/apr-util
+# make
+# make install
+
+注意:web服务器是受SELinux控制
+    所以首先使用getenfore查看SELinux的状态，如果为Enforcing的话要使用setenforce 0关掉
+    然后vim /etc/selinux/config永久关闭
+
+===========================================================================
+httpd 2.4新特性:
+1.MPM可于运行时装载
+2.Event MPM
+3.异步读写
+4.在每模块及每目录上指定日志级别
+5.每请求配置<If> <ElseIf> <Else>
+6.增强的表达式分析器
+7.毫秒级的KeepAlive TimeOut
+8.基于域名的虚拟主机不再需要NameVirtualHost命令
+9.降低了内存占用
+10.支持在配置文件中使用自定义的变量
+
+新增加的模块:
+mod_proxy_fcgi
+mod_proxy_scgi
+mod_proxy_express
+mod_remoteip
+mod_session
+mod_ratelimit
+mod_request
+等等
+
+另外，对于基于IP的访问控制:
+Order allow,deny
+allow from all
+在2.4中不再支持此方法
+
+在2.4中应该使用Require
+Require [not] user USERNAME
+Require [not] group GROUPNAME
+Require [not] ip IPADDR
+      IP
+      NETWORK/NETMASK
+      NETWORK/LENGTH
+      NET 
+      
+      例如: 172.16.0.0/255.255.0.0 <==> 172.16.0.0/16 <==> 172.16
+Require [not] host HOSTNAME
+
+      HOSTNAME
+      DOMAIN
+      
+      例如: www.magedu.com
+           .magedu.com
+      
+      
+      允许所有主机访问:
+         Require all granted
+      拒绝所有主机访问:
+         Require all deny
+
+注: 加not 就是不允许
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
