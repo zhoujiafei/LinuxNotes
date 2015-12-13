@@ -1,0 +1,32 @@
+Mail Server:
+SMTP : Simple Mail Transfer Protocol
+ESMTP : Extended Simple Mail Transfer Protocol
+POP3 : Post Office Protpcol 邮局协议
+IMAP4 : Internet Mail Access Protocol : 互联网邮件访问协议
+
+SMTP (25/tcp) : 从客户端到服务端这个流程用到的是SMTP协议
+
+邮件传输:MT
+邮件投递:MD
+邮件用户:MU
+邮件用户代理:MUA 能够让邮件用户编辑邮件并且向外发送邮件的工具 Mail User Agent
+邮件传输代理:MTA
+邮件投递代理:MDA Mail Delivery Agent
+邮件取回代理:MRA Mail Retrivel Agent
+
+发送邮件的流程:
+1、从MUA --> MTA :使用的是SMTP协议
+2、从MTA 发现需要发送的邮件是本地邮件，则使用LMTP协议传输，如果发现要发送的邮件是远程邮件，则使用SMTP协议传输
+3、当远程服务器接收到邮件之后，会将邮件传输给MDA，又MDA进行邮件投递的工作
+4、用户通过MRA来取得自己的邮件，这个过程使用的协议叫POP3协议或者是IMAP协议
+
+Open Relay : 开放式中继
+
+SASL : Simple Authintication Secure Layer 简单认证安全层
+
+webMail:
+
+LDAP协议:Lightweight Directory Access Protocol 轻量级目录访问协议(将数据以目录的形式存放，读取数据的速度非常快，但是写入数据的速度比较慢)
+
+虚拟用户: 仅用于访问某服务的标识
+   用户: 字符串 凭证
