@@ -12,7 +12,7 @@ SMTP (25/tcp) : 从客户端到服务端这个流程用到的是SMTP协议
 邮件用户代理:MUA 能够让邮件用户编辑邮件并且向外发送邮件的工具 Mail User Agent
 邮件传输代理:MTA
 邮件投递代理:MDA Mail Delivery Agent
-邮件取回代理:MRA Mail Retrivel Agent
+邮件取回(检索)代理:MRA Mail Retrivel Agent
 
 发送邮件的流程:
 1、从MUA --> MTA :使用的是SMTP协议
@@ -30,3 +30,96 @@ LDAP协议:Lightweight Directory Access Protocol 轻量级目录访问协议(将
 
 虚拟用户: 仅用于访问某服务的标识
    用户: 字符串 凭证
+   
+======================================================================
+MTA : 邮件传输代理,SMTP服务器
+   sendmail ,UUDP
+         单体结构，配置文件语法(m4)
+   qmail
+   postfix:模块化设计，安全，跟sendmail兼容，效率高
+   exim:MTA
+   Exchange:(Windows 异步消息协作平台)
+   
+MDA : 
+   procmail
+   maildrop
+
+MRA :(pop3,IMAP4)
+   cyrus-imap
+   dovecot
+   
+MUA : 
+   Outlook Express,Outlook
+   Foxmail
+   Thunderbird
+   Evolution
+   mutt(文本界面)
+   
+Webmail :
+   openwebmail
+   squirrelmail
+   Extmail(Extman)
+   
+SASL :
+   syrus-sasl
+   
+======================================================================
+postfix配置文件:
+   postfix模块化：
+      master:主进程（配置文件为/etc/postfix/master.cf）
+      mail:/etc/postfix/man.cf
+      参数 = 值 : 参数必须写在行的绝对行首，以空白开头的行被认为是上一行的延续
+      
+
+postconf: 配置postfix命令
+   -d : 显示默认的配置
+   -n : 修改了的配置
+   -m : 显示支持的查找表类型
+   -A : 显示支持的SASL客户端插件类型
+   -e PARMATER=VALUE : 更改某参数配置信息，并保存至main.cf文件中
+
+smtp状态码:
+   1xx:纯信息
+   2xx:正确
+   3xx:上一步操作尚未完成,需要继续补充
+   4xx:暂时性错误
+   5xx:永久性错误
+
+smtp协议命令:
+   helo (smtp协议)
+   ehlo (esmtp协议)
+   mail from: 邮件来自哪里
+   rcpt to: 发给谁
+   
+alias : 邮件别名
+
+abc@magedu.com --> xxx@magedu.com
+
+/etc/aliases --->  hash  ---> /etc/aliases.db
+
+使用 newalias 命令转换   
+
+postfix 默认把本机的IP地址所在的网段识别为本地网络，并且为之中继邮件   
+   
+   
+   
+   
+   
+     
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
