@@ -205,7 +205,7 @@ mysql 为用户设定密码方式:
 3、mysql> UPDATE user SET Password=PASSWROD('password') WHERE USER='root'
 
 新增用户并且授权:
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.%.%' IDENTIFIED BY 'redhat'
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.%.%' IDENTIFIED BY 'redhat'
 
 ===========================================================================
 

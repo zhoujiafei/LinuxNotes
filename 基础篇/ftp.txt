@@ -1,0 +1,78 @@
+FTP : File Transmition Protocol 文件传输协议
+      21/tcp
+      
+文件共享服务: 
+      FTP   : 工作在tcp的应用层
+      NFS   : Network File System(RPC : Remote Procedure Call) ，远程过程调用
+      SAMBA : CIFS/SMB
+
+
+FTP :tcp 两个连接
+   （1）命令连接或者叫控制连接 : 监听在tcp的21号端口
+   （2）数据连接:
+          1、ftp主动模式: 20/tcp
+          2、被动模式: 随机端口
+          
+       数据传输模式(自动模式):
+            二进制
+            文本
+            ftp server --> ftp client
+       互联网上传输的数据有三种类型:
+            结构化数据
+            半结构化数据
+            非结构化数据
+
+FTP服务端程序:
+   wu-ftpd   : 
+   vsftpd    : Very Secure ftp Daemon (RedHat 默认安装)
+   proftpd   : 
+   filezilla :
+   
+FTP客户端程序:
+   CLI : 
+         ftp
+         lftp
+   GUI :
+         gftpd
+         flashftp
+         filezilla
+         
+===============================================================================
+vsftpd :
+   /etc/vsftpd:配置文件目录
+   /etc/init.d/vsftpd : 服务脚本
+   /usr/sbin/vsftpd:主程序
+
+基于PAM实现的用户认证:
+   /etc/pam.d/*
+   /lib/security/*
+   /lib64/security/*
+   支持虚拟用户
+      
+vsftpd :
+   /var/ftp:
+   
+ftp:系统用户
+   匿名用户 --> 系统用户: anonymous_enable
+   系统用户 --> local_enable
+   虚拟用户 --> 系统用户
+   
+/var/ftp : ftp用户的家目录
+   匿名用户的访问目录
+   
+文件服务权限 = 文件系统权限 与 文件共享权限的 交集
+
+vsftpd:
+   max_clients=#
+   max_per_ip=#
+
+安全通信方式:
+   ftps : ftp+ssl/tls
+   sftp : OpenSSH,SubSystem,sftp(SSH)
+   
+
+===============================================================================
+守护进程:
+   独立守护
+   瞬时守护
+      由xinetd代为管理

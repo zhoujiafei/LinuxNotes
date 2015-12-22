@@ -101,8 +101,51 @@ abc@magedu.com --> xxx@magedu.com
 
 postfix 默认把本机的IP地址所在的网段识别为本地网络，并且为之中继邮件   
    
+======================================================================
+
+MRA : cyrus-imap , dovecot
+   dovecot依赖mysql客户端
    
+   pop3  : 110/tcp
+   imap4 : 143/tcp
    
+   以明文方式工作
+   dove 支持4种协议: pop3,imap4,pops,imaps
+   
+   配置文件:/etc/dovecot.conf
+   
+   有SASL认证能力
+   
+邮箱格式:
+   mbox:一个文件存储所有邮件
+   maildir:一个文件存储一封邮件，所有文件存储在一个目录中
+   
+======================================================================
+postfix + SASL 用户认证
+1、启动sasl，启动sasl服务
+   /etc/init.d/saslauthd : 服务启动脚本
+   /etc/sysconfig/saslauthd
+   
+   saslauthd -v : 显示当前主机saslauthd服务所支持的认证机制，默认为pam
+   testsaslauthd : 可以用于测试能不能用于认证
+   
+   postconf -a : 看一下支不支持SASL功能
+   
+smtp:
+   connection:smtpd_client_restrictions =
+   helo:smtpd_helo_restrictions = 
+   mail from: smtpd_sender_restrictions = 
+   rcpt to : smtpd_recipient_restrictions = 
+   data:smtpd_data_restrictions = 
+   
+
+查找表:
+   访问控制文件
+   /etc/postfix/access --> hash --> /etc/postfix/access.db
+      aboma@zhou.com reject
+      zhou@163.com ok
+   
+
    
    
      

@@ -1,0 +1,36 @@
+NFS : Network File System
+
+ext3,ext2 : 工作在 user space
+
+RPC : Remote Procedure Call : 远程过程调用
+
+Linux : 提供rpc的服务程序,Portmap: 111/tcp ,111/udp
+
+RPC : 编程技术,简化分布式应用程序的开发, RPC: Client --> RPC Client --> RPC Server --> Server
+
+PRC: 二进制格式,文本格式(xmlrpc) --> SOAP (Simple Object Access Protocol)
+
+NFS : sun公司开发
+      NFSv2,NFSv3,NFSv4
+      
+
+
+服务器端:nfs-utils
+
+nfs: nfsd(nfs服务),mountd(挂载相关进程),quotad(配额)
+
+nfsd: 2049/tcp , 2049/udp
+mounted: 端口
+quotad: 端口
+      半随机的
+      
+/etc/exports:
+   /path/to/somedir CLIENT_LIST
+      1.多个客户端之间使用空白字符分隔
+      2.每个客户端后面必须紧跟一个小括号，小括号里面定义的是此客户访问特性，如访问权限等等
+      
+例如: 172.16.0.1(ro,async) 172.16.0.24(ro) 
+   
+
+
+
