@@ -29,7 +29,65 @@ quotad: 端口
       1.多个客户端之间使用空白字符分隔
       2.每个客户端后面必须紧跟一个小括号，小括号里面定义的是此客户访问特性，如访问权限等等
       
-例如: 172.16.0.1(ro,async) 172.16.0.24(ro) 
+例如: 172.16.0.0/16(ro,async) 192.168.0.0/24(rw,sync)
+
+showmount命令:
+   showmount -e NFS_SERVER : 查看NFS服务器共享(导出)的各文件系统
+   showmount -a NFS_SERVER : 查看NFS服务器所有被挂载的文件系统及客户端的对应列表
+   showmount -d NFS_SERVER : 显示NFSF服务器所有导出的文件系统中被客户端挂载了的文件系统列表
+
+客户端使用mount命令挂载就可以使用nfsf服务
+mount -t nfs NFS_SERVER:/PATH/TO/SOME_EXPORT  /PATH/TO/SOMESHARE
+
+exportfs命令:
+   -a:一般是跟-r和-u同时使用，表示重新挂载所有文件系统或者取消导出所有文件系统
+   -r:重新导出
+   -u:取消导出
+   
+   
+文件系统导出属性:
+   ro:只读
+   rw:可读可写
+   sync:同步
+   async:异步
+   root_squash:将root用户映射为来宾账号
+   no_root_squash:不启用root_squash的属性，也就是说root用户会被映射为服务端的root用户
+   all_squash:将所有用户映射为来宾账号
+   anonuid,anongid:指定映射的来宾账号的UID和GID
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+
+
    
 
 
