@@ -56,7 +56,7 @@ exportfs命令:
    anonuid,anongid:指定映射的来宾账号的UID和GID
    
    
-   
+让mountd和quotad等进程监听在固定端口，编辑配置文件/etc/sysconfig/nfs修改里面对应进程的端口
    
    
    
