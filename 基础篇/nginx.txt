@@ -52,6 +52,46 @@ nginx负载均衡的算法:
    1、round-robin : 轮询
    2、ip_hash : 可以将曾经分发过的ip，分发到同一个服务器地址
    3、least_coon : 最少连接（挑一个连接数最少的服务器，然后分发到这上面）
+   
+   
+nginx缓存:
+   cache : 共享内存: 存储键和缓存对象元数据
+           磁盘空间: 存储数据
+   
+   proxy_cache_path : 不能定义在server{}上下文中
+   
+缓存目录：子目录级别
+
+   proxy_cache_path /nginx/cache/first level=1:2:1 keys_zone=first:20m max_size=1G
+   
+   cache_manger:LRU
+   
+WebDAV (Web-based Distributed Authoring and Versioning) 一种基于HTTP1.1协议的通信协议，它扩展了http1.1，在GET,POST,HEAD等几个HTTP标准方法以外添加一些新的方法。
+使得应用程序可直接对webserver直接读写，并支持文件锁定（Lock）和解锁（UnLock），还可以支持文件的版本控制。
+
+另外常用的三种缓存：
+   open_log_cache:日志缓存
+   open_file_cache:文件缓存
+   fastcgi_cache:
+   
+而nginx的limit限制也基于共享内存实现
+
+rewrite: 重定向
+   location /images/ {
+      rewrite http://172.16.100.19/images/
+   }
+   
+   
+   location / {
+      root html
+      index index.html index.php
+      rewrite "^/bbs/(.*)" http://172.16.100.19/forum/$1 last;
+   }
+
+last : 本次重写完成之后，重启下一轮检查
+break: 本次重写完成之后，直接执行后续操作
+
+
 
 ----------------------------------------------------------------
 
